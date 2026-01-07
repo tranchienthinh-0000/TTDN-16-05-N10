@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- TREE VIEW -->
+        <record id="view_lich_su_cong_tac_tree" model="ir.ui.view">
+            <field name="name">lich_su_cong_tac.tree</field>
+            <field name="model">lich_su_cong_tac</field>
+            <field name="arch" type="xml">
+                <tree string="Lịch sử công tác">
+                    <field name="nhan_vien_id"/>
+                    <field name="phong_ban_id"/>
+                    <field name="chuc_vu_id"/>
+                    <field name="ngay_bat_dau"/>
+                    <field name="ngay_ket_thuc"/>
+                    <field name="trang_thai"/>
+                    <field name="ly_do"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- FORM VIEW -->
+        <record id="view_lich_su_cong_tac_form" model="ir.ui.view">
+            <field name="name">lich_su_cong_tac.form</field>
+            <field name="model">lich_su_cong_tac</field>
+            <field name="arch" type="xml">
+                <form string="Lịch sử công tác">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Lịch sử công tác</h1>
+                        </div>
+
+                        <group col="4" string="Thông tin">
+                            <field name="nhan_vien_id"/>
+                            <field name="phong_ban_id"/>
+                            <field name="chuc_vu_id"/>
+
+                            <field name="ngay_bat_dau"/>
+                            <field name="ngay_ket_thuc"/>
+                            <field name="trang_thai" readonly="1"/>
+
+                            <field name="ly_do"/>
+                            <field name="ghi_chu"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- SEARCH VIEW -->
+        <record id="view_lich_su_cong_tac_search" model="ir.ui.view">
+            <field name="name">lich_su_cong_tac.search</field>
+            <field name="model">lich_su_cong_tac</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm lịch sử công tác">
+                    <field name="nhan_vien_id"/>
+                    <field name="phong_ban_id"/>
+                    <field name="chuc_vu_id"/>
+                    <field name="ngay_bat_dau"/>
+                    <field name="ngay_ket_thuc"/>
+                    <field name="trang_thai"/>
+
+                    <separator/>
+
+                    <filter string="Đang làm"
+                            name="dang_lam"
+                            domain="[('trang_thai','=','dang_lam')]"/>
+
+                    <filter string="Đã kết thúc"
+                            name="da_ket_thuc"
+                            domain="[('trang_thai','=','da_ket_thuc')]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ACTION -->
+        <record id="action_lich_su_cong_tac" model="ir.actions.act_window">
+            <field name="name">Lịch sử công tác</field>
+            <field name="res_model">lich_su_cong_tac</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_lich_su_cong_tac_search"/>
+        </record>
+
+    </data>
+</odoo>

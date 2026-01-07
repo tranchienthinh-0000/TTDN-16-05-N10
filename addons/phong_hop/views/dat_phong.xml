@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- TREE -->
+    <record id="view_dat_phong_tree" model="ir.ui.view">
+      <field name="name">dat_phong.tree</field>
+      <field name="model">dat_phong</field>
+      <field name="arch" type="xml">
+        <tree string="Đặt phòng">
+          <field name="chu_de"/>
+          <field name="phong_hop_id"/>
+          <field name="nguoi_chu_tri_id"/>
+          <field name="bat_dau"/>
+          <field name="ket_thuc"/>
+          <field name="trang_thai"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- CALENDAR -->
+    <record id="view_dat_phong_calendar" model="ir.ui.view">
+      <field name="name">dat_phong.calendar</field>
+      <field name="model">dat_phong</field>
+      <field name="arch" type="xml">
+        <calendar string="Lịch đặt phòng"
+                  date_start="bat_dau"
+                  date_stop="ket_thuc"
+                  color="phong_hop_id"
+                  quick_add="false">
+          <field name="chu_de"/>
+          <field name="phong_hop_id"/>
+          <field name="nguoi_chu_tri_id"/>
+        </calendar>
+      </field>
+    </record>
+
+    <!-- FORM -->
+    <record id="view_dat_phong_form" model="ir.ui.view">
+      <field name="name">dat_phong.form</field>
+      <field name="model">dat_phong</field>
+      <field name="arch" type="xml">
+        <form string="Đặt phòng">
+          <header>
+            <button name="action_xac_nhan" type="object" string="Xác nhận"
+                    class="btn-primary"
+                    attrs="{'invisible':[('trang_thai','!=','nhap')]}"/>
+            <button name="action_huy" type="object" string="Hủy"
+                    class="btn-secondary"
+                    attrs="{'invisible':[('trang_thai','=','huy')]}"/>
+            <button name="action_ve_nhap" type="object" string="Về nháp"
+                    class="btn-secondary"
+                    attrs="{'invisible':[('trang_thai','=','nhap')]}"/>
+
+            <field name="trang_thai" widget="statusbar" statusbar_visible="nhap,xac_nhan,huy"/>
+          </header>
+
+          <sheet>
+            <div class="oe_title">
+              <h1><field name="chu_de" placeholder="Chủ đề cuộc họp..."/></h1>
+            </div>
+
+            <group col="4">
+              <field name="phong_hop_id"/>
+              <field name="nguoi_chu_tri_id"/>
+
+              <field name="bat_dau"/>
+              <field name="ket_thuc"/>
+
+              <field name="thanh_phan_tham_du_ids" widget="many2many_tags"/>
+            </group>
+
+            <group string="Ghi chú">
+              <field name="ghi_chu"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- SEARCH -->
+    <record id="view_dat_phong_search" model="ir.ui.view">
+      <field name="name">dat_phong.search</field>
+      <field name="model">dat_phong</field>
+      <field name="arch" type="xml">
+        <search string="Tìm kiếm đặt phòng">
+          <field name="chu_de"/>
+          <field name="phong_hop_id"/>
+          <field name="nguoi_chu_tri_id"/>
+          <field name="bat_dau"/>
+          <field name="ket_thuc"/>
+          <field name="trang_thai"/>
+
+          <separator/>
+          <filter string="Nháp" name="f_nhap" domain="[('trang_thai','=','nhap')]"/>
+          <filter string="Đã xác nhận" name="f_xn" domain="[('trang_thai','=','xac_nhan')]"/>
+          <filter string="Hủy" name="f_huy" domain="[('trang_thai','=','huy')]"/>
+        </search>
+      </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_dat_phong" model="ir.actions.act_window">
+      <field name="name">Đặt phòng</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">calendar,tree,form</field>
+      <field name="search_view_id" ref="view_dat_phong_search"/>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_nhan_vien_form_inherit_phong_hop" model="ir.ui.view">
+      <field name="name">nhan_vien.form.inherit.phong_hop</field>
+      <field name="model">nhan_vien</field>
+      <field name="inherit_id" ref="nhan_su.view_nhan_vien_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+
+          <page string="Lịch họp (Chủ trì)">
+            <field name="lich_hop_chu_tri_ids">
+              <tree>
+                <field name="chu_de"/>
+                <field name="phong_hop_id"/>
+                <field name="bat_dau"/>
+                <field name="ket_thuc"/>
+                <field name="trang_thai"/>
+              </tree>
+            </field>
+          </page>
+
+          <page string="Lịch họp (Tham dự)">
+            <field name="lich_hop_tham_du_ids">
+              <tree>
+                <field name="chu_de"/>
+                <field name="phong_hop_id"/>
+                <field name="nguoi_chu_tri_id"/>
+                <field name="bat_dau"/>
+                <field name="ket_thuc"/>
+                <field name="trang_thai"/>
+              </tree>
+            </field>
+          </page>
+
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>

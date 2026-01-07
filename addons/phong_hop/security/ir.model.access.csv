@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_phong_hop_user,access.phong_hop.user,model_phong_hop,base.group_user,1,1,1,1
+access_dat_phong_user,access.dat_phong.user,model_dat_phong,base.group_user,1,1,1,1

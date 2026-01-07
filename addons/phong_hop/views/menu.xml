@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <menuitem id="menu_phong_hop_root"
+              name="Phòng họp"
+              sequence="20"/>
+
+    <menuitem id="menu_phong_hop_danh_muc"
+              name="Danh mục"
+              parent="menu_phong_hop_root"
+              sequence="1"/>
+
+    <menuitem id="menu_phong_hop_nghiep_vu"
+              name="Nghiệp vụ"
+              parent="menu_phong_hop_root"
+              sequence="2"/>
+
+    <menuitem id="menu_phong_hop_phong"
+              name="Phòng họp"
+              parent="menu_phong_hop_danh_muc"
+              sequence="1"
+              action="action_phong_hop"/>
+
+    <menuitem id="menu_phong_hop_dat"
+              name="Đặt phòng"
+              parent="menu_phong_hop_nghiep_vu"
+              sequence="1"
+              action="action_dat_phong"/>
+
+  </data>
+</odoo>

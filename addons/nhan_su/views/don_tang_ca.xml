@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_don_tang_ca_tree" model="ir.ui.view">
+            <field name="name">don_tang_ca.tree</field>
+            <field name="model">don_tang_ca</field>
+            <field name="arch" type="xml">
+                <tree string="Đơn tăng ca">
+                    <field name="nhan_vien_id"/>
+                    <field name="ngay"/>
+                    <field name="gio_bat_dau"/>
+                    <field name="gio_ket_thuc"/>
+                    <field name="so_gio_ot" readonly="1"/>
+                    <field name="he_so"/>
+                    <field name="trang_thai"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_don_tang_ca_form" model="ir.ui.view">
+            <field name="name">don_tang_ca.form</field>
+            <field name="model">don_tang_ca</field>
+            <field name="arch" type="xml">
+                <form string="Đơn tăng ca">
+                    <header>
+                        <button name="action_gui_duyet" type="object" string="Gửi duyệt"
+                                class="btn-primary"
+                                attrs="{'invisible':[('trang_thai','!=','nhap')]}"/>
+
+                        <button name="action_duyet" type="object" string="Duyệt"
+                                class="btn-primary"
+                                attrs="{'invisible':[('trang_thai','!=','gui_duyet')]}"/>
+
+                        <button name="action_tu_choi" type="object" string="Từ chối"
+                                class="btn-secondary"
+                                attrs="{'invisible':[('trang_thai','!=','gui_duyet')]}"/>
+
+                        <button name="action_huy" type="object" string="Hủy"
+                                class="btn-secondary"
+                                attrs="{'invisible':[('trang_thai','in',['da_duyet','huy'])]}"/>
+
+                        <button name="action_ve_nhap" type="object" string="Về nháp"
+                                class="btn-secondary"
+                                attrs="{'invisible':[('trang_thai','not in',['gui_duyet','tu_choi'])]}"/>
+
+                        <field name="trang_thai" widget="statusbar"
+                               statusbar_visible="nhap,gui_duyet,da_duyet,tu_choi,huy"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title"><h1>Đơn tăng ca</h1></div>
+
+                        <group col="4">
+                            <field name="nhan_vien_id"/>
+                            <field name="ngay"/>
+                            <field name="gio_bat_dau"/>
+                            <field name="gio_ket_thuc"/>
+                            <field name="so_gio_ot" readonly="1"/>
+                            <field name="he_so"/>
+                            <field name="ly_do"/>
+                            <field name="ghi_chu"/>
+                        </group>
+
+                        <group string="Thông tin duyệt">
+                            <field name="nguoi_duyet_id" readonly="1"/>
+                            <field name="ngay_duyet" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_don_tang_ca_search" model="ir.ui.view">
+            <field name="name">don_tang_ca.search</field>
+            <field name="model">don_tang_ca</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm đơn tăng ca">
+                    <field name="nhan_vien_id"/>
+                    <field name="ngay"/>
+                    <field name="trang_thai"/>
+                    <separator/>
+                    <filter string="Chờ duyệt" name="dtc_cho_duyet" domain="[('trang_thai','=','gui_duyet')]"/>
+                    <filter string="Đã duyệt" name="dtc_da_duyet" domain="[('trang_thai','=','da_duyet')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_don_tang_ca" model="ir.actions.act_window">
+            <field name="name">Đơn tăng ca</field>
+            <field name="res_model">don_tang_ca</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_don_tang_ca_search"/>
+        </record>
+
+    </data>
+</odoo>

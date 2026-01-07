@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+    <record id="seq_tai_san" model="ir.sequence">
+      <field name="name">Mã tài sản</field>
+      <field name="code">tai_san</field>
+      <field name="prefix">TS%(y)s-</field>
+      <field name="padding">4</field>
+      <field name="company_id" eval="False"/>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- TREE -->
+    <record id="view_cap_phat_thu_hoi_tree" model="ir.ui.view">
+      <field name="name">cap_phat_thu_hoi.tree</field>
+      <field name="model">cap_phat_thu_hoi</field>
+      <field name="arch" type="xml">
+        <tree string="Cấp phát / Thu hồi">
+          <field name="tai_san_id"/>
+          <field name="nhan_vien_id"/>
+          <field name="ngay_ban_giao"/>
+          <field name="ngay_thu_hoi"/>
+          <field name="trang_thai"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- FORM -->
+    <record id="view_cap_phat_thu_hoi_form" model="ir.ui.view">
+      <field name="name">cap_phat_thu_hoi.form</field>
+      <field name="model">cap_phat_thu_hoi</field>
+      <field name="arch" type="xml">
+        <form string="Cấp phát / Thu hồi">
+          <header>
+            <button name="action_thu_hoi"
+                    type="object"
+                    string="Thu hồi"
+                    class="btn-primary"
+                    states="dang_giu"/>
+            <field name="trang_thai"
+                   widget="statusbar"
+                   statusbar_visible="dang_giu,da_thu_hoi"/>
+          </header>
+
+          <sheet>
+            <group col="4">
+              <field name="tai_san_id" attrs="{'readonly':[('trang_thai','=','da_thu_hoi')]}"/>
+              <field name="nhan_vien_id" attrs="{'readonly':[('trang_thai','=','da_thu_hoi')]}"/>
+
+              <field name="ngay_ban_giao" attrs="{'readonly':[('trang_thai','=','da_thu_hoi')]}"/>
+              <field name="nguoi_ban_giao_id" readonly="1"/>
+
+              <field name="ngay_thu_hoi" readonly="1"/>
+              <field name="nguoi_thu_hoi_id" readonly="1"/>
+
+              <field name="ghi_chu"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- SEARCH -->
+    <record id="view_cap_phat_thu_hoi_search" model="ir.ui.view">
+      <field name="name">cap_phat_thu_hoi.search</field>
+      <field name="model">cap_phat_thu_hoi</field>
+      <field name="arch" type="xml">
+        <search string="Tìm kiếm cấp phát / thu hồi">
+          <field name="tai_san_id"/>
+          <field name="nhan_vien_id"/>
+          <field name="trang_thai"/>
+          <separator/>
+          <filter string="Đang giữ" name="cp_dang_giu" domain="[('trang_thai','=','dang_giu')]"/>
+          <filter string="Đã thu hồi" name="cp_da_thu_hoi" domain="[('trang_thai','=','da_thu_hoi')]"/>
+        </search>
+      </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_cap_phat_thu_hoi" model="ir.actions.act_window">
+      <field name="name">Cấp phát / Thu hồi</field>
+      <field name="res_model">cap_phat_thu_hoi</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="view_cap_phat_thu_hoi_search"/>
+    </record>
+
+  </data>
+</odoo>

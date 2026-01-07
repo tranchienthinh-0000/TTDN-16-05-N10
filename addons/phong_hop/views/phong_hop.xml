@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_phong_hop_tree" model="ir.ui.view">
+      <field name="name">phong_hop.tree</field>
+      <field name="model">phong_hop</field>
+      <field name="arch" type="xml">
+        <tree string="Phòng họp">
+          <field name="ten"/>
+          <field name="suc_chua"/>
+          <field name="vi_tri"/>
+          <field name="co_may_chieu"/>
+          <field name="co_bang_trang"/>
+          <field name="co_am_thanh"/>
+          <field name="active"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_phong_hop_form" model="ir.ui.view">
+      <field name="name">phong_hop.form</field>
+      <field name="model">phong_hop</field>
+      <field name="arch" type="xml">
+        <form string="Phòng họp">
+          <sheet>
+            <div class="oe_title">
+              <h1><field name="ten" placeholder="Tên phòng..."/></h1>
+            </div>
+
+            <group col="4">
+              <field name="suc_chua"/>
+              <field name="vi_tri"/>
+              <field name="active"/>
+            </group>
+
+            <group string="Tiện ích">
+              <field name="co_may_chieu"/>
+              <field name="co_bang_trang"/>
+              <field name="co_am_thanh"/>
+            </group>
+
+            <group string="Ghi chú">
+              <field name="ghi_chu"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_phong_hop" model="ir.actions.act_window">
+      <field name="name">Phòng họp</field>
+      <field name="res_model">phong_hop</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_chung_chi_tree" model="ir.ui.view">
+            <field name="name">chung_chi.tree</field>
+            <field name="model">chung_chi</field>
+            <field name="arch" type="xml">
+                <tree string="Chứng chỉ">
+                    <field name="nhan_vien_id"/>
+                    <field name="ma_chung_chi"/>
+                    <field name="ten_chung_chi"/>
+                    <field name="don_vi_cap"/>
+                    <field name="ngay_cap"/>
+                    <field name="ngay_het_han"/>
+                    <field name="trang_thai"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_chung_chi_form" model="ir.ui.view">
+            <field name="name">chung_chi.form</field>
+            <field name="model">chung_chi</field>
+            <field name="arch" type="xml">
+                <form string="Chứng chỉ">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Chứng chỉ</h1>
+                        </div>
+
+                        <group col="4" string="Thông tin">
+                            <field name="nhan_vien_id"/>
+                            <field name="ma_chung_chi"/>
+                            <field name="ten_chung_chi"/>
+
+                            <field name="don_vi_cap"/>
+                            <field name="ngay_cap"/>
+                            <field name="ngay_het_han"/>
+                            <field name="trang_thai" readonly="1"/>
+
+                            <field name="ghi_chu"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_chung_chi_search" model="ir.ui.view">
+            <field name="name">chung_chi.search</field>
+            <field name="model">chung_chi</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm chứng chỉ">
+                    <field name="nhan_vien_id"/>
+                    <field name="ma_chung_chi"/>
+                    <field name="ten_chung_chi"/>
+                    <field name="don_vi_cap"/>
+                    <field name="ngay_cap"/>
+                    <field name="ngay_het_han"/>
+                    <field name="trang_thai"/>
+
+                    <separator/>
+
+                    <filter string="Còn hạn" name="con_han" domain="[('trang_thai','=','con_han')]"/>
+                    <filter string="Hết hạn" name="het_han" domain="[('trang_thai','=','het_han')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_chung_chi" model="ir.actions.act_window">
+            <field name="name">Chứng chỉ</field>
+            <field name="res_model">chung_chi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_chung_chi_search"/>
+        </record>
+
+    </data>
+</odoo>

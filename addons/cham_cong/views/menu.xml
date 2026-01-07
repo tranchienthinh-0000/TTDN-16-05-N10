@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- ROOT APP: không có parent => hiện sidebar -->
+    <menuitem id="menu_cham_cong_root"
+              name="Chấm công"
+              sequence="10"
+              web_icon="cham_cong,static/description/icon.png"/>
+
+    <!-- Nhóm nghiệp vụ -->
+    <menuitem id="menu_cham_cong_nghiep_vu"
+              name="Nghiệp vụ"
+              parent="menu_cham_cong_root"
+              sequence="1"/>
+
+    <!-- Menus -->
+    <menuitem id="menu_cham_cong"
+              name="Chấm công"
+              parent="menu_cham_cong_nghiep_vu"
+              action="action_cham_cong"
+              sequence="1"/>
+
+    <menuitem id="menu_don_nghi_phep"
+              name="Đơn nghỉ phép"
+              parent="menu_cham_cong_nghiep_vu"
+              action="action_don_nghi_phep"
+              sequence="2"/>
+
+    <menuitem id="menu_don_tang_ca"
+              name="Đơn tăng ca"
+              parent="menu_cham_cong_nghiep_vu"
+              action="action_don_tang_ca"
+              sequence="3"/>
+
+  </data>
+</odoo>

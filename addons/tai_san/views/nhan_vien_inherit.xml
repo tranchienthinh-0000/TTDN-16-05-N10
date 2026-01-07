@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_nhan_vien_form_inherit_tai_san" model="ir.ui.view">
+      <field name="name">nhan_vien.form.inherit.tai_san</field>
+      <field name="model">nhan_vien</field>
+      <field name="inherit_id" ref="nhan_su.view_nhan_vien_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+          <page string="Tài sản đang giữ">
+            <field name="tai_san_dang_giu_ids"
+                   domain="[('trang_thai','=','dang_giu')]"
+                   context="{'default_nhan_vien_id': id}"
+                   create="0" delete="0">
+              <tree>
+                <field name="tai_san_id"/>
+                <field name="ngay_ban_giao"/>
+                <field name="nguoi_ban_giao_id"/>
+                <field name="trang_thai"/>
+                <field name="ghi_chu"/>
+              </tree>
+            </field>
+          </page>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>

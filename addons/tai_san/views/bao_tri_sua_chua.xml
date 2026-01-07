@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- TREE -->
+    <record id="view_bao_tri_sua_chua_tree" model="ir.ui.view">
+      <field name="name">bao_tri_sua_chua.tree</field>
+      <field name="model">bao_tri_sua_chua</field>
+      <field name="arch" type="xml">
+        <tree string="Bảo trì / Sửa chữa">
+          <field name="tai_san_id"/>
+          <field name="ngay_sua"/>
+          <field name="trang_thai"/>
+          <field name="chi_phi"/>
+          <field name="do_loi_nhan_vien_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- FORM -->
+    <record id="view_bao_tri_sua_chua_form" model="ir.ui.view">
+      <field name="name">bao_tri_sua_chua.form</field>
+      <field name="model">bao_tri_sua_chua</field>
+      <field name="arch" type="xml">
+        <form string="Bảo trì / Sửa chữa">
+          <header>
+            <button name="action_da_xong"
+                    type="object"
+                    string="Đã xong"
+                    class="btn-primary"
+                    states="dang_sua"/>
+            <field name="trang_thai"
+                   widget="statusbar"
+                   statusbar_visible="dang_sua,da_xong"/>
+          </header>
+
+          <sheet>
+            <group col="4">
+              <field name="tai_san_id" attrs="{'readonly':[('trang_thai','=','da_xong')]}"/>
+              <field name="ngay_sua" attrs="{'readonly':[('trang_thai','=','da_xong')]}"/>
+
+              <field name="chi_phi" attrs="{'readonly':[('trang_thai','=','da_xong')]}"/>
+              <field name="do_loi_nhan_vien_id" attrs="{'readonly':[('trang_thai','=','da_xong')]}"/>
+
+              <field name="loi_gi" attrs="{'readonly':[('trang_thai','=','da_xong')]}"/>
+              <field name="ghi_chu"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_bao_tri_sua_chua" model="ir.actions.act_window">
+      <field name="name">Bảo trì / Sửa chữa</field>
+      <field name="res_model">bao_tri_sua_chua</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  </data>
+</odoo>

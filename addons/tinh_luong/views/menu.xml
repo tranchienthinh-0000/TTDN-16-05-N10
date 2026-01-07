@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <menuitem id="menu_tinh_luong_root"
+              name="Tiền lương"
+              sequence="12"
+              web_icon="tinh_luong,static/description/icon.png"/>
+
+    <menuitem id="menu_tinh_luong_nghiep_vu"
+              name="Nghiệp vụ"
+              parent="menu_tinh_luong_root"
+              sequence="1"/>
+
+    <menuitem id="menu_phieu_luong"
+              name="Phiếu lương"
+              parent="menu_tinh_luong_nghiep_vu"
+              action="action_phieu_luong"
+              sequence="1"/>
+
+  </data>
+</odoo>

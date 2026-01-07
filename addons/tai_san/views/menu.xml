@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <menuitem id="menu_tai_san_root"
+              name="Tài sản"
+              sequence="10"
+              web_icon="tai_san,static/description/icon.png"/>
+
+    <menuitem id="menu_ts_danh_muc" name="Danh mục" parent="menu_tai_san_root" sequence="1"/>
+    <menuitem id="menu_ts_nghiep_vu" name="Nghiệp vụ" parent="menu_tai_san_root" sequence="2"/>
+
+    <menuitem id="menu_ts_ho_so" name="Hồ sơ tài sản"
+              parent="menu_ts_nghiep_vu" sequence="1"
+              action="action_quan_ly_ho_so_tai_san"/>
+
+    <menuitem id="menu_ts_cap_phat" name="Cấp phát / Thu hồi"
+              parent="menu_ts_nghiep_vu" sequence="2"
+              action="action_cap_phat_thu_hoi"/>
+
+    <menuitem id="menu_ts_bao_tri" name="Bảo trì / Sửa chữa"
+              parent="menu_ts_nghiep_vu" sequence="3"
+              action="action_bao_tri_sua_chua"/>
+
+    <menuitem id="menu_ts_khau_hao" name="Khấu hao"
+              parent="menu_ts_nghiep_vu" sequence="4"
+              action="action_khau_hao"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_loai_phu_cap_tree" model="ir.ui.view">
+            <field name="name">loai_phu_cap.tree</field>
+            <field name="model">loai_phu_cap</field>
+            <field name="arch" type="xml">
+                <tree string="Loại phụ cấp">
+                    <field name="ma"/>
+                    <field name="ten"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_loai_phu_cap_form" model="ir.ui.view">
+            <field name="name">loai_phu_cap.form</field>
+            <field name="model">loai_phu_cap</field>
+            <field name="arch" type="xml">
+                <form string="Loại phụ cấp">
+                    <sheet>
+                        <div class="oe_title"><h1>Loại phụ cấp</h1></div>
+                        <group col="4">
+                            <field name="ma"/>
+                            <field name="ten"/>
+                            <field name="active"/>
+                            <field name="ghi_chu"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_loai_phu_cap_search" model="ir.ui.view">
+            <field name="name">loai_phu_cap.search</field>
+            <field name="model">loai_phu_cap</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm loại phụ cấp">
+                    <field name="ma"/>
+                    <field name="ten"/>
+                    <separator/>
+                    <filter string="Đang hoạt động" name="active_true" domain="[('active','=',True)]"/>
+                    <filter string="Ngừng hoạt động" name="active_false" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_loai_phu_cap" model="ir.actions.act_window">
+            <field name="name">Loại phụ cấp</field>
+            <field name="res_model">loai_phu_cap</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_loai_phu_cap_search"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,2 +1,15 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_nhan_vien,nhan_vien.nhan_vien,model_nhan_vien,base.group_user,1,1,1,1
+access_nhan_vien_user,access.nhan_vien.user,nhan_su.model_nhan_vien,base.group_user,1,1,1,1
+access_phong_ban_user,access.phong_ban.user,nhan_su.model_phong_ban,base.group_user,1,1,1,1
+access_chuc_vu_user,access.chuc_vu.user,nhan_su.model_chuc_vu,base.group_user,1,1,1,1
+access_lich_su_cong_tac_user,access.lich_su_cong_tac.user,nhan_su.model_lich_su_cong_tac,base.group_user,1,1,1,1
+access_chung_chi_user,access.chung_chi.user,nhan_su.model_chung_chi,base.group_user,1,1,1,1
+access_cham_cong_user,access.cham_cong.user,nhan_su.model_cham_cong,base.group_user,1,1,1,1
+access_loai_phu_cap_user,access.loai_phu_cap.user,nhan_su.model_loai_phu_cap,base.group_user,1,1,1,1
+access_phu_cap_chuc_vu_user,access.phu_cap_chuc_vu.user,nhan_su.model_phu_cap_chuc_vu,base.group_user,1,1,1,1
+access_hop_dong_user,access.hop_dong.user,nhan_su.model_hop_dong,base.group_user,1,1,1,1
+access_phu_cap_hop_dong_user,access.phu_cap_hop_dong.user,nhan_su.model_phu_cap_hop_dong,base.group_user,1,1,1,1
+access_don_nghi_phep_user,access.don_nghi_phep.user,nhan_su.model_don_nghi_phep,base.group_user,1,1,1,1
+access_don_tang_ca_user,access.don_tang_ca.user,nhan_su.model_don_tang_ca,base.group_user,1,1,1,1
+access_phieu_luong_user,access.phieu_luong.user,nhan_su.model_phieu_luong,base.group_user,1,1,1,1
+access_dong_phieu_luong_user,access.dong_phieu_luong.user,nhan_su.model_dong_phieu_luong,base.group_user,1,1,1,1
