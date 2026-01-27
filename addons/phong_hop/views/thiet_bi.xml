@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =========================================================
+             FORM VIEW - THIẾT BỊ PHÒNG HỌP
+        ========================================================== -->
+        <record id="view_thiet_bi_form" model="ir.ui.view">
+            <field name="name">thiet_bi_form</field>
+            <field name="model">thiet_bi</field>
+            <field name="arch" type="xml">
+                <form string="Chi tiết thiết bị phòng họp">
+                    <sheet>
+                        <group col="2">
+                            <group string="Thông tin thiết bị">
+                                <field name="name" required="1"/>
+                                <field name="loai_thiet_bi" required="1"/>
+                                <field name="phong_id" required="1"/>
+                                <field name="trang_thai"/>
+                            </group>
+
+                            <group string="Liên kết tài sản">
+                                <!-- Liên kết sang module tai_san (phương án A) -->
+                                <field name="tai_san_id"
+                                       options="{'no_create_edit': False, 'no_open': False}"
+                                       placeholder="Chọn tài sản tương ứng (nếu có)"/>
+                                <field name="mo_ta" placeholder="Ghi chú mô tả tình trạng/đặc điểm thiết bị..."/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- =========================================================
+             TREE VIEW - DANH SÁCH THIẾT BỊ
+        ========================================================== -->
+        <record id="view_thiet_bi_tree" model="ir.ui.view">
+            <field name="name">thiet_bi_tree</field>
+            <field name="model">thiet_bi</field>
+            <field name="arch" type="xml">
+                <tree string="Danh sách thiết bị phòng họp" default_order="phong_id asc, trang_thai asc">
+                    <field name="name"/>
+                    <field name="loai_thiet_bi"/>
+                    <field name="phong_id"/>
+                    <field name="tai_san_id"/>
+                    <field name="trang_thai"
+                           decoration-muted="trang_thai == 'san_sang'"
+                           decoration-danger="trang_thai == 'hong'"
+                           decoration-warning="trang_thai == 'can_bao_tri'"
+                           decoration-success="trang_thai == 'dang_su_dung'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- =========================================================
+             SEARCH VIEW - TÌM KIẾM / BỘ LỌC
+        ========================================================== -->
+        <record id="view_thiet_bi_search" model="ir.ui.view">
+            <field name="name">thiet_bi_search</field>
+            <field name="model">thiet_bi</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm thiết bị">
+                    <field name="name"/>
+                    <field name="loai_thiet_bi"/>
+                    <field name="phong_id"/>
+                    <field name="tai_san_id"/>
+                    <field name="trang_thai"/>
+
+                    <separator/>
+
+                    <!-- Bộ lọc trạng thái -->
+                    <filter string="Sẵn sàng" name="filter_san_sang"
+                            domain="[('trang_thai', '=', 'san_sang')]"/>
+                    <filter string="Đang sử dụng" name="filter_dang_su_dung"
+                            domain="[('trang_thai', '=', 'dang_su_dung')]"/>
+                    <filter string="Cần bảo trì" name="filter_can_bao_tri"
+                            domain="[('trang_thai', '=', 'can_bao_tri')]"/>
+                    <filter string="Hỏng" name="filter_hong"
+                            domain="[('trang_thai', '=', 'hong')]"/>
+
+                    <separator/>
+
+                    <!-- Nhóm theo -->
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Phòng họp" name="group_phong"
+                                context="{'group_by': 'phong_id'}"/>
+                        <filter string="Loại thiết bị" name="group_loai"
+                                context="{'group_by': 'loai_thiet_bi'}"/>
+                        <filter string="Trạng thái" name="group_trang_thai"
+                                context="{'group_by': 'trang_thai'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- =========================================================
+             ACTION - QUẢN LÝ THIẾT BỊ
+        ========================================================== -->
+        <record id="action_thiet_bi" model="ir.actions.act_window">
+            <field name="name">Quản lý thiết bị</field>
+            <field name="res_model">thiet_bi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_thiet_bi_search"/>
+            <field name="context">{}</field>
+        </record>
+
+    </data>
+</odoo>

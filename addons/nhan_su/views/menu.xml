@@ -1,16 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <menuitem
-            id="menu_root"
-            name="QLNS"
-            sequence="0"/>
-          
-        <menuitem name="Quản lý nhân viên" 
-            id="menu_nhan_vien" 
-            parent="menu_root" 
-            sequence="1"
-            action="action_nhan_vien"
-        />
-    </data>
+  <data>
+
+    <!-- Menu gốc -->
+    <menuitem id="menu_root" name="Quản lý nhân sự" sequence="0"/>
+
+    
+    <menuitem id="menu_qlns_nghiep_vu"
+              name="Danh mục nhân viên"
+              parent="menu_root"
+              sequence="10"/>
+
+    <menuitem id="menu_qlns_danh_muc"
+              name="Danh mục phòng ban"
+              parent="menu_root"
+              sequence="20"/>
+
+    
+    <menuitem name="Quản lý nhân viên"
+              id="menu_nhan_vien"
+              parent="menu_qlns_nghiep_vu"
+              sequence="1"
+              action="action_nhan_vien"/>
+
+    <menuitem name="Lịch sử công tác"
+              id="menu_lich_su_cong_tac"
+              parent="menu_qlns_nghiep_vu"
+              sequence="2"
+              action="action_lich_su_cong_tac"/>
+
+    <menuitem name="Hợp đồng"
+              id="menu_hop_dong"
+              parent="menu_qlns_nghiep_vu"
+              sequence="3"
+              action="action_hop_dong"/>
+
+    <menuitem name="Đơn nghỉ phép"
+              id="menu_don_nghi_phep"
+              parent="menu_qlns_nghiep_vu"
+              sequence="4"
+              action="action_don_nghi_phep"/>
+
+    <menuitem name="Đơn tăng ca"
+              id="menu_don_tang_ca"
+              parent="menu_qlns_nghiep_vu"
+              sequence="5"
+              action="action_don_tang_ca"/>
+
+    <menuitem name="Phiếu lương"
+              id="menu_phieu_luong"
+              parent="menu_qlns_nghiep_vu"
+              sequence="6"
+              action="action_phieu_luong"/>
+
+    <menuitem name="Phụ cấp chức vụ"
+              id="menu_phu_cap_chuc_vu"
+              parent="menu_qlns_nghiep_vu"
+              sequence="7"
+              action="action_phu_cap_chuc_vu"/>
+
+    
+    <menuitem name="Quản lý phòng ban"
+              id="menu_phong_ban"
+              parent="menu_qlns_danh_muc"
+              sequence="1"
+              action="action_phong_ban"/>
+
+    <menuitem name="Quản lý chức vụ"
+              id="menu_chuc_vu"
+              parent="menu_qlns_danh_muc"
+              sequence="2"
+              action="action_chuc_vu"/>
+
+    <menuitem name="Chứng chỉ"
+              id="menu_chung_chi"
+              parent="menu_qlns_danh_muc"
+              sequence="3"
+              action="action_chung_chi"/>
+
+    <menuitem name="Loại phụ cấp"
+              id="menu_loai_phu_cap"
+              parent="menu_qlns_danh_muc"
+              sequence="4"
+              action="action_loai_phu_cap"/>
+
+  </data>
 </odoo>

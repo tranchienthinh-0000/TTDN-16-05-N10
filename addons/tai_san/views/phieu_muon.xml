@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =========================
+             FORM VIEW
+        ========================== -->
+        <record id="view_phieu_muon_form" model="ir.ui.view">
+            <field name="name">phieu_muon_form</field>
+            <field name="model">phieu_muon</field>
+            <field name="arch" type="xml">
+                <form string="Phiếu Mượn Tài Sản" class="o_form_sheet">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="ma_phieu_muon"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="state"
+                                       widget="statusbar"
+                                       statusbar_visible="draft,approved,done,cancelled"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Thông Tin Mượn">
+                                <group>
+                                    <!-- Khóa thông tin kế hoạch sau khi duyệt -->
+                                    <field name="nhan_vien_id"
+                                           placeholder="Chọn nhân viên..."
+                                           required="1"
+                                           attrs="{'readonly': [('state','!=','draft')]}"/>
+
+                                    <field name="tai_san_id"
+                                           placeholder="Chọn tài sản..."
+                                           required="1"
+                                           attrs="{'readonly': [('state','!=','draft')]}"/>
+
+                                    <field name="ngay_muon_du_kien"
+                                           widget="datetime"
+                                           required="1"
+                                           attrs="{'readonly': [('state','!=','draft')]}"/>
+
+                                    <field name="ngay_tra_du_kien"
+                                           widget="datetime"
+                                           required="1"
+                                           attrs="{'readonly': [('state','!=','draft')]}"/>
+
+                                    <!-- Ngày thực tế: hiển thị readonly vì ghi nhận bằng nút -->
+                                    <field name="ngay_muon_thuc_te"
+                                           widget="datetime"
+                                           readonly="1"/>
+
+                                    <field name="ngay_tra_thuc_te"
+                                           widget="datetime"
+                                           readonly="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Trạng Thái và Ghi Chú">
+                                <group>
+                                    <field name="trang_thai_muon" readonly="1"/>
+                                    <field name="ghi_chu"
+                                           widget="text"
+                                           placeholder="Nhập ghi chú..."
+                                           attrs="{'readonly': [('state','in',['done','cancelled'])]}"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <footer>
+                            <button name="action_approve"
+                                    string="Duyệt"
+                                    type="object"
+                                    states="draft"
+                                    class="px-2 btn-primary"/>
+
+                            <!-- Hướng C -->
+                            <button name="action_mark_borrowed"
+                                    string="Ghi nhận mượn"
+                                    type="object"
+                                    states="approved"
+                                    class="px-2 btn-info"/>
+
+                            <button name="action_mark_returned"
+                                    string="Ghi nhận trả"
+                                    type="object"
+                                    states="approved"
+                                    class="px-2 btn-success"/>
+
+                            <button name="action_cancel"
+                                    string="Hủy"
+                                    type="object"
+                                    states="draft,approved"
+                                    class="px-2 btn-danger"/>
+
+                            <button name="action_reset_to_draft"
+                                    string="Quay lại Nháp"
+                                    type="object"
+                                    states="cancelled"
+                                    class="px-2 btn-warning"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- =========================
+             TREE VIEW
+        ========================== -->
+        <record id="view_phieu_muon_tree" model="ir.ui.view">
+            <field name="name">phieu_muon_tree</field>
+            <field name="model">phieu_muon</field>
+            <field name="arch" type="xml">
+                <tree string="Phiếu Mượn">
+                    <field name="ma_phieu_muon"/>
+                    <field name="nhan_vien_id"/>
+                    <field name="tai_san_id"/>
+                    <field name="ngay_muon_du_kien"/>
+                    <field name="ngay_tra_du_kien"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- =========================
+             KANBAN VIEW
+        ========================== -->
+        <record id="view_phieu_muon_kanban" model="ir.ui.view">
+            <field name="name">phieu_muon_kanban</field>
+            <field name="model">phieu_muon</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="ma_phieu_muon"/>
+                    <field name="nhan_vien_id"/>
+                    <field name="tai_san_id"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <!-- QUAN TRỌNG: thêm oe_kanban_global_click để click mở form -->
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <strong t-esc="record.ma_phieu_muon.value" class="d-block"/>
+                                <span t-esc="record.nhan_vien_id.value" class="d-block"/>
+                                <span t-esc="record.tai_san_id.value" class="text-muted d-block"/>
+                                <span class="badge badge-info" t-esc="record.state.value"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- =========================
+             SEARCH VIEW
+        ========================== -->
+        <record id="phieu_muon_search" model="ir.ui.view">
+            <field name="name">phieu_muon_search</field>
+            <field name="model">phieu_muon</field>
+            <field name="arch" type="xml">
+                <search string="Tìm Phiếu Mượn">
+                    <field name="ma_phieu_muon"/>
+                    <field name="nhan_vien_id"/>
+                    <field name="tai_san_id"/>
+                    <field name="state"/>
+                    <filter string="Nháp" name="filter_draft" domain="[('state','=','draft')]"/>
+                    <filter string="Đã duyệt" name="filter_approved" domain="[('state','=','approved')]"/>
+                    <filter string="Hoàn thành" name="filter_done" domain="[('state','=','done')]"/>
+                    <filter string="Hủy" name="filter_cancelled" domain="[('state','=','cancelled')]"/>
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Nhân sự" name="group_nhan_vien" context="{'group_by': 'nhan_vien_id'}"/>
+                        <filter string="Tài sản" name="group_tai_san" context="{'group_by': 'tai_san_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- =========================
+             ACTION
+        ========================== -->
+        <record id="action_phieu_muon" model="ir.actions.act_window">
+            <field name="name">Phiếu Mượn</field>
+            <field name="res_model">phieu_muon</field>
+            <field name="view_mode">tree,kanban,form</field>
+        </record>
+
+    </data>
+</odoo>

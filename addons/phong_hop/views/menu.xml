@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_root"
+                  name="Quản lý phòng họp"
+                  sequence="0"/>
+
+        <menuitem name="Danh sách phòng họp"
+                  id="menu_quan_ly_phong_hop"
+                  parent="menu_root"
+                  sequence="1"
+                  action="action_quan_ly_phong_hop"/>
+
+        <!-- Menu - Quản lý thiết bị -->
+        <menuitem id="menu_thiet_bi"
+                  name="Quản lý Thiết Bị"
+                  parent="menu_root"
+                  action="action_thiet_bi"
+                  sequence="2"/>
+
+        <menuitem name="Đăng ký mượn phòng"
+                  id="menu_dat_phong"
+                  parent="menu_root"
+                  sequence="3"/>
+
+        <menuitem name="Danh sách chờ duyệt"
+                  id="menu_dat_phong_cho_duyet"
+                  parent="menu_dat_phong"
+                  action="action_dat_phong_cho_duyet"/>
+
+        <menuitem name="Danh sách đã duyệt"
+                  id="menu_dat_phong_da_duyet"
+                  parent="menu_dat_phong"
+                  action="action_dat_phong_da_duyet"/>
+
+        <menuitem name="Danh sách phòng đang sử dụng"
+                  id="menu_dat_phong_dang_su_dung"
+                  parent="menu_dat_phong"
+                  action="action_dat_phong_dang_su_dung"/>
+
+        <menuitem name="Danh sách đã hủy"
+                  id="menu_dat_phong_da_huy"
+                  parent="menu_dat_phong"
+                  action="action_dat_phong_da_huy"/>
+
+        <menuitem name="Lịch sử thay đổi"
+                  id="menu_lich_su_thay_doi"
+                  parent="menu_root"
+                  sequence="4"
+                  action="action_lich_su_thay_doi"/>
+
+        <menuitem name="Lịch sử mượn trả"
+                  id="menu_lich_su_muon_tra"
+                  parent="menu_root"
+                  sequence="5"
+                  action="action_lich_su_muon_tra"/>
+
+        <menuitem id="menu_dashboard_trang_thai"
+                  name="DashBoard"
+                  parent="menu_root"
+                  action="action_dat_phong_dashboard"
+                  sequence="6"/>
+    </data>
+</odoo>

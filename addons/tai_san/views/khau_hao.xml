@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_khau_hao_form" model="ir.ui.view">
+            <field name="name">khau_hao_form</field>
+            <field name="model">khau_hao</field>
+            <field name="arch" type="xml">
+                <form string="Thông tin khấu hao" class="o_form_full_width">
+                    <sheet class="o_form_sheet_full">
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <group class="o_form_group_full">
+                            <notebook>
+                                <page string="Thông tin chính">
+                                    <group string="Thông tin cơ bản" class="o_3col">
+                                        <field name="ma_khau_hao" class="oe_inline"
+                                               options="{'no_open': True}"/>
+                                        <field name="ngay_khau_hao" widget="date" placeholder="Chọn ngày khấu hao..."
+                                               required="1"/>
+                                    </group>
+                                    <group string="Giá trị" class="o_2col">
+                                        <field name="gia_tri_khau_hao" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"
+                                               placeholder="Nhập giá trị khấu hao..." required="1"/>
+                                    </group>
+                                    <group string="Tài sản liên quan" class="o_1col">
+                                        <field name="tai_san_id" widget="selection" placeholder="Chọn tài sản..."
+                                               required="1"/>
+                                    </group>
+                                </page>
+                                <page string="Ghi chú">
+                                    <field name="ghi_chu" widget="text" placeholder="Nhập ghi chú..."/>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_khau_hao_tree" model="ir.ui.view">
+            <field name="name">khau_hao_tree</field>
+            <field name="model">khau_hao</field>
+            <field name="arch" type="xml">
+                <tree string="Danh sách khấu hao" class="o_list_full_width">
+                    <field name="ma_khau_hao" class="oe_inline"/>
+                    <field name="ngay_khau_hao" widget="date"/>
+                    <field name="gia_tri_khau_hao" widget="monetary"/>
+                    <field name="tai_san_id" widget="selection"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_khau_hao_kanban" model="ir.ui.view">
+            <field name="name">khau_hao_kanban</field>
+            <field name="model">khau_hao</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_view">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card">
+                                <div class="o_kanban_content">
+                                    <strong>
+                                        <field name="ma_khau_hao"/>
+                                    </strong>
+                                    <div>
+                                        Ngày khấu hao:
+                                        <field name="ngay_khau_hao"/>
+                                    </div>
+                                    <div>
+                                        Giá trị:
+                                        <field name="gia_tri_khau_hao" widget="monetary"/>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted">
+                                            <field name="tai_san_id"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_khau_hao" model="ir.actions.act_window">
+            <field name="name">Khấu hao</field>
+            <field name="res_model">khau_hao</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+    </data>
+</odoo>
