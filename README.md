@@ -199,11 +199,44 @@ sử dụng → trả phòng/thiết bị.
 
 ---
 
-## 🤝 Đóng góp (Contributing)
+## 🖼️ 8. Screenshots (Minh hoạ giao diện)
+
+> Gợi ý: tạo thư mục `docs/screenshots/` và đặt ảnh theo đúng tên file bên dưới để README tự hiển thị.
+
+### 8.1. Dashboard Tài sản
+  ![Dashboard tài sản](docs/logo/111.png)
+
+### 8.2. Danh sách / Phiếu mượn tài sản
+  ![Phiếu mượn tài sản](docs/logo/222.png)
+
+### 8.3. Đặt phòng + Trạng thái (workflow)
+  ![Đặt phòng + trạng thái](docs/logo/333.png)
+
+### 8.4. AI Wizard đặt phòng
+- Ảnh gợi ý: `docs/screenshots/ai_wizard_datphong.png`
+
+  ![AI Wizard đặt phòng](docs/logo/444.png)
+
+---
+
+### 9. Sơ đồ hệ thống (Use case / Kiến trúc)
+- Use case: 
+- Kiến trúc hệ thống:
+- **Use case diagram**
+
+  ![Use case diagram](docs//logo/666.png)
+
+- **Kiến trúc hệ thống**
+
+  ![Kiến trúc hệ thống](docs/logo/555.png)
+
+---
+
+## 10. 🤝 Đóng góp (Contributing)
 1. Fork/clone dự án
-2. Tạo nhánh mới: `feature/<ten-tinh-nang>`
-3. Commit rõ ràng: `feat: ...`, `fix: ...`
-4. Tạo Pull Request kèm mô tả, ảnh minh hoạ (nếu có)
+2. Tạo nhánh mới: 
+3. Commit rõ ràng:
+4. Tạo Pull Request kèm mô tả, ảnh minh hoạ
 
 Gợi ý mở rộng:
 - Phân quyền chi tiết theo vai trò (Admin/Quản lý tài sản/Điều phối phòng họp/Người dùng)
@@ -212,13 +245,29 @@ Gợi ý mở rộng:
 
 ---
 
-## 👥 Thông tin nhóm
+## 11.  👥 Thông tin nhóm
 - Nhóm: **Nhóm 10 – K16**
 - Kế thừa: **K15** (Tài sản & Phòng họp)
 - Cải tiến & triển khai: **K16**
-- Thành viên: [Điền theo báo cáo]
+- Thành viên: [Trần Chiến Thịnh, Nguyễn Trọng Anh, Nguyễn Thị Thùy Linh]
 
 ---
 
-## 📄 License
-Dự án phục vụ mục đích học tập trong học phần Thực tập doanh nghiệp.
+## 📝 12. Changelog (K15 → K16)
+
+Nhóm K16 kế thừa 02 module (Tài sản, Phòng họp) từ K15 và thực hiện các cải tiến chính sau:
+
+1. **Chuẩn hóa workflow và trạng thái xử lý** cho mượn/trả tài sản và đặt phòng (giảm thao tác sai quy trình).
+2. **Bổ sung/siết ràng buộc dữ liệu**: kiểm tra thời gian hợp lệ, điều kiện chuyển trạng thái, hạn chế nhập thiếu/nhập sai.
+3. **Tăng kiểm soát trùng lịch** phòng họp và (nếu áp dụng) thiết bị theo cùng khung thời gian.
+4. **Cải thiện audit/truy vết**: nhật ký thay đổi, lịch sử mượn–trả/đặt phòng rõ ràng hơn.
+5. **Bổ sung thống kê/dashboard** phục vụ quan sát nhanh tình trạng tài sản/phòng họp.
+6. **Bổ sung AI Wizard đặt phòng**: nhập yêu cầu tự nhiên, gợi ý phòng/thiết bị và tạo đăng ký nhanh.
+7. **Chuẩn hóa cấu trúc triển khai** để cài/upgrade ổn định trên môi trường Odoo + PostgreSQL Docker.
+
+
+---
+
+## 📄 13. License
+**Educational Use** – Dự án phục vụ mục đích học tập trong học phần *Thực tập CNTT7 – Thực tập doanh nghiệp*.  
+Không sử dụng cho mục đích thương mại khi chưa có sự cho phép của các bên liên quan.
