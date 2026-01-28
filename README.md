@@ -77,7 +77,7 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 - (Tuỳ chọn) Git/GitHub
 <div align="center">
   <p align="center">
-        <img src="docs/logo/qqq.png" alt="" width="180"/>
+        <img src="docs/logo/qqq.png" alt="" width="500px"/>
   </p>
 ---
 
