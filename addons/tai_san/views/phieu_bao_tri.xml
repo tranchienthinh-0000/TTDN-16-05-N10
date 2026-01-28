@@ -1,79 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="view_phieu_bao_tri_form" model="ir.ui.view">
-            <field name="name">phieu_bao_tri_form</field>
-            <field name="model">phieu_bao_tri</field>
-            <field name="arch" type="xml">
-                <form string="Phiếu bảo trì tài sản">
-                    <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
-                        <button name="action_approve" string="Duyệt" type="object" states="draft" class="px-2 btn-primary"/>
-                        <button name="action_done" string="Hoàn thành" type="object" states="approved" class="px-2 btn-success"/>
-                        <button name="action_cancel" string="Hủy" type="object" states="draft,approved" class="px-2 btn-danger"/>
-                    </header>
-                    <sheet class="o_form_sheet_full p-4 bg-light border rounded">
-                        <group class="o_2col">
-                            <group string="Thông tin chung">
-                                <field name="ma_phieu_bao_tri"  class="text-lg font-weight-bold"/>
-                                <field name="tai_san_id" placeholder="Chọn tài sản..." required="1"/>
-                                <field name="chi_phi" placeholder="Nhập chi phí bảo trì..." required="1"/>
-                            </group>
-                            <group string="Thời gian bảo trì">
-                                <field name="ngay_bao_tri" widget="datetime" placeholder="Chọn ngày bảo trì dự kiến..." required="1"/>
-                                <field name="ngay_bao_tri_thuc_te" widget="datetime" placeholder="Chọn ngày bảo trì thực tế..."/>
-                                <field name="ngay_tra" widget="datetime" placeholder="Chọn ngày trả dự kiến..." required="1"/>
-                                <field name="ngay_tra_thuc_te" widget="datetime" placeholder="Chọn ngày trả thực tế..."/>
-                            </group>
-                        </group>
-                        <group string="Ghi chú">
-                            <field name="ghi_chu" placeholder="Ghi chú thêm..." widget="textarea"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+  <data>
 
-        <record id="view_phieu_bao_tri_tree" model="ir.ui.view">
-            <field name="name">phieu_bao_tri_tree</field>
-            <field name="model">phieu_bao_tri</field>
-            <field name="arch" type="xml">
-                <tree string="Danh sách phiếu bảo trì">
-                    <field name="ma_phieu_bao_tri" class="oe_inline"/>
-                    <field name="tai_san_id"/>
-                    <field name="ngay_bao_tri" widget="datetime"/>
-                    <field name="ngay_tra" widget="datetime"/>
-                    <field name="chi_phi"/>
-                    <field name="state" widget="statusbar"/>
-                </tree>
-            </field>
-        </record>
+    <!-- ===================================================== -->
+    <!-- SEQUENCE (khuyến nghị: chuyển sang data/sequence.xml) -->
+    <!-- ===================================================== -->
+    <record id="seq_phieu_bao_tri" model="ir.sequence">
+      <field name="name">Phiếu bảo trì</field>
+      <field name="code">phieu_bao_tri</field>
+      <field name="prefix">PB-</field>
+      <field name="padding">4</field>
+    </record>
 
-        <record id="phieu_bao_tri_search" model="ir.ui.view">
-            <field name="name">phieu_bao_tri_search</field>
-            <field name="model">phieu_bao_tri</field>
-            <field name="arch" type="xml">
-                <search string="Tìm kiếm phiếu bảo trì">
-                    <field name="ma_phieu_bao_tri"/>
-                    <field name="tai_san_id"/>
-                    <field name="ngay_bao_tri"/>
-                    <field name="ngay_tra"/>
-                    <field name="chi_phi"/>
-                </search>
-            </field>
-        </record>
+    <!-- ===================================================== -->
+    <!-- FORM VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_phieu_bao_tri_form" model="ir.ui.view">
+      <field name="name">phieu_bao_tri.form</field>
+      <field name="model">phieu_bao_tri</field>
+      <field name="arch" type="xml">
+        <form string="Phiếu bảo trì tài sản">
+          <header>
+            <!-- Đồng bộ với Python: cancelled -->
+            <field name="state" widget="statusbar" statusbar_visible="draft,approved,done,cancelled"/>
 
-        <record id="action_phieu_bao_tri" model="ir.actions.act_window">
-            <field name="name">Phiếu bảo trì</field>
-            <field name="res_model">phieu_bao_tri</field>
-            <field name="view_mode">tree,form</field>
-        </record>
+            <button name="action_approve" string="Duyệt" type="object"
+                    attrs="{'invisible': [('state','!=','draft')]}"
+                    class="btn-primary"/>
 
-        <record id="seq_phieu_bao_tri" model="ir.sequence">
-            <field name="name">Phiếu bảo trì</field>
-            <field name="code">phieu_bao_tri</field>
-            <field name="prefix">PB-</field>
-            <field name="padding">4</field>
-        </record>
-    </data>
+            <button name="action_done" string="Hoàn thành" type="object"
+                    attrs="{'invisible': [('state','!=','approved')]}"
+                    class="btn-success"/>
+
+            <button name="action_cancel" string="Hủy" type="object"
+                    attrs="{'invisible': [('state','not in',('draft','approved'))]}"
+                    class="btn-danger"/>
+          </header>
+
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="ma_phieu_bao_tri" readonly="1"/>
+              </h1>
+            </div>
+
+            <group col="2" string="Thông tin chung">
+              <field name="tai_san_id" required="1" placeholder="Chọn tài sản..."/>
+              <field name="chi_phi" required="1" placeholder="Nhập chi phí bảo trì..."/>
+            </group>
+
+            <group col="2" string="Thời gian bảo trì">
+              <field name="ngay_bao_tri" widget="datetime" required="1"/>
+              <field name="ngay_bao_tri_thuc_te" widget="datetime"/>
+
+              <field name="ngay_tra" widget="datetime" required="1"/>
+              <field name="ngay_tra_thuc_te" widget="datetime"/>
+            </group>
+
+            <group string="Ghi chú">
+              <field name="ghi_chu" widget="textarea" placeholder="Ghi chú thêm..."/>
+            </group>
+          </sheet>
+
+          <!-- Chatter chỉ hợp lệ nếu model inherit mail.thread + mail.activity.mixin -->
+          <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- TREE VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_phieu_bao_tri_tree" model="ir.ui.view">
+      <field name="name">phieu_bao_tri.tree</field>
+      <field name="model">phieu_bao_tri</field>
+      <field name="arch" type="xml">
+        <tree string="Danh sách phiếu bảo trì">
+          <field name="ma_phieu_bao_tri"/>
+          <field name="tai_san_id"/>
+          <field name="ngay_bao_tri"/>
+          <field name="ngay_tra"/>
+          <field name="chi_phi"/>
+          <field name="state" widget="badge"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- KANBAN VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_phieu_bao_tri_kanban" model="ir.ui.view">
+      <field name="name">phieu_bao_tri.kanban</field>
+      <field name="model">phieu_bao_tri</field>
+      <field name="arch" type="xml">
+        <kanban class="o_kanban_view">
+          <!-- BẮT BUỘC: khai báo field dùng trong template -->
+          <field name="state"/>
+          <field name="ma_phieu_bao_tri"/>
+          <field name="tai_san_id"/>
+          <field name="ngay_bao_tri"/>
+          <field name="chi_phi"/>
+
+          <templates>
+            <t t-name="kanban-box">
+              <div class="o_kanban_record card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge badge-primary">
+                    <t t-esc="record.state.value or ''"/>
+                  </span>
+                  <span class="font-weight-bold">
+                    <t t-esc="record.ma_phieu_bao_tri.value or ''"/>
+                  </span>
+                </div>
+
+                <div>
+                  <strong>Tài sản:</strong>
+                  <t t-esc="record.tai_san_id.value and record.tai_san_id.value[1] or ''"/>
+                  <br/>
+                  <strong>Ngày bảo trì:</strong>
+                  <t t-esc="record.ngay_bao_tri.value or ''"/>
+                  <br/>
+                  <strong>Chi phí:</strong>
+                  <t t-esc="record.chi_phi.value or 0"/>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- SEARCH VIEW (RNG-safe) -->
+    <!-- ===================================================== -->
+    <record id="view_phieu_bao_tri_search" model="ir.ui.view">
+      <field name="name">phieu_bao_tri.search</field>
+      <field name="model">phieu_bao_tri</field>
+      <field name="arch" type="xml">
+        <search string="Tìm kiếm phiếu bảo trì">
+
+          <!-- Search fields -->
+          <field name="ma_phieu_bao_tri"/>
+          <field name="tai_san_id"/>
+          <field name="ngay_bao_tri"/>
+          <field name="ngay_tra"/>
+          <field name="chi_phi"/>
+          <field name="state"/>
+
+          <separator/>
+
+          <!-- Quick filters (tùy chọn nhưng rất ổn định) -->
+          <filter name="f_draft" string="Nháp" domain="[('state','=','draft')]"/>
+          <filter name="f_approved" string="Đã duyệt" domain="[('state','=','approved')]"/>
+          <filter name="f_done" string="Hoàn thành" domain="[('state','=','done')]"/>
+          <filter name="f_cancelled" string="Hủy" domain="[('state','=','cancelled')]"/>
+
+          <separator/>
+
+          <!-- Group By -->
+          <group expand="0" string="Nhóm theo">
+            <filter name="g_state" string="Trạng thái" context="{'group_by':'state'}"/>
+            <filter name="g_asset" string="Tài sản" context="{'group_by':'tai_san_id'}"/>
+          </group>
+
+        </search>
+      </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- ACTION -->
+    <!-- ===================================================== -->
+    <record id="action_phieu_bao_tri" model="ir.actions.act_window">
+      <field name="name">Phiếu bảo trì</field>
+      <field name="res_model">phieu_bao_tri</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="search_view_id" ref="view_phieu_bao_tri_search"/>
+    </record>
+
+  </data>
 </odoo>

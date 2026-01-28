@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_phong_hop_ai_wizard_form" model="ir.ui.view">
+      <field name="name">phong_hop.ai.wizard.form</field>
+      <field name="model">phong_hop.ai_wizard</field>
+      <field name="arch" type="xml">
+        <form string="Trợ lý đặt phòng (AI)" create="false">
+          <sheet>
+
+            <group>
+              <field name="nguoi_muon_id" options="{'no_create': True}"/>
+            </group>
+
+            <notebook>
+              <page string="Yêu cầu">
+                <group>
+                  <field name="request_text"
+                         placeholder="VD: Mai 9h–11h cần phòng 10 người có máy chiếu và 2 mic"/>
+                </group>
+
+                <group col="4" string="Trích xuất">
+                  <field name="ngay" readonly="1"/>
+                  <field name="so_nguoi" readonly="1"/>
+                  <field name="thoi_gian_muon_du_kien" readonly="1"/>
+                  <field name="thoi_gian_tra_du_kien" readonly="1"/>
+                </group>
+
+                <group col="2" string="Thiết bị yêu cầu">
+                  <field name="yeu_cau_loai_thiet_bi" readonly="1"/>
+                  <field name="yeu_cau_so_luong_tb" readonly="1"/>
+                </group>
+
+                <group col="2" string="Thiết lập gợi ý">
+                  <field name="max_lech_phut"/>
+                </group>
+              </page>
+
+              <page string="Kết quả">
+                <group string="Tóm tắt">
+                  <field name="tom_tat_goi_y" readonly="1" nolabel="1" widget="text"/>
+                </group>
+
+                <group string="Phòng gợi ý (xếp hạng)">
+                  <field name="phong_goi_y_ids" readonly="1">
+                    <tree create="false" delete="false">
+                      <field name="name" string="Phòng"/>
+                      <field name="suc_chua"/>
+                      <field name="loai_phong"/>
+                      <field name="trang_thai"/>
+                    </tree>
+                  </field>
+                </group>
+
+                <group string="Chọn phòng để tạo đăng ký">
+                  <field name="phong_de_xuat_id" readonly="1"/>
+                </group>
+
+                <group string="Gợi ý khung giờ gần nhất">
+                  <field name="goi_y_slot" readonly="1" nolabel="1" widget="text"/>
+                </group>
+              </page>
+
+              <page string="Thiết bị cần mượn từ kho">
+                <field name="thiet_bi_goi_y_ids" readonly="1">
+                  <tree create="false" delete="false">
+                    <field name="name"/>
+                    <field name="loai_thiet_bi"/>
+                    <field name="trang_thai"/>
+                    <field name="vi_tri_hien_tai"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+
+            <footer>
+              <button name="action_goi_y" type="object" string="Gợi ý" class="btn-primary"/>
+              <button name="action_tao_dang_ky" type="object" string="Tạo đăng ký" class="btn-success"/>
+              <button special="cancel" string="Đóng" class="btn-secondary"/>
+            </footer>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_phong_hop_ai_wizard" model="ir.actions.act_window">
+      <field name="name">Trợ lý đặt phòng (AI)</field>
+      <field name="res_model">phong_hop.ai_wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="context">{}</field>
+    </record>
+
+
+    <menuitem id="menu_phong_hop_ai_wizard"
+              name="Trợ lý đặt phòng (AI)"
+              parent="phong_hop.menu_root"
+              action="action_phong_hop_ai_wizard"
+              sequence="25"/>
+
+
+  </data>
+</odoo>

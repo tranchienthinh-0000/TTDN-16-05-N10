@@ -1,68 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="view_lich_su_su_dung_form" model="ir.ui.view">
-            <field name="name">lich_su_su_dung_form</field>
-            <field name="model">lich_su_su_dung</field>
-            <field name="arch" type="xml">
-                <form string="Lịch Sử Sử Dụng">
-                    <sheet class="bg-white border rounded shadow-sm p-3">
-                        <group>
-                            <field name="ma_lich_su_su_dung"  class="font-weight-bold text-primary"/>
-                        </group>
-                        <notebook>
-                            <page string="Thông Tin Mượn Trả">
-                                <group>
-                                    <field name="ngay_muon" widget="datetime" required="1"/>
-                                    <field name="ngay_tra" widget="datetime" required="1"/>
-                                    <field name="nhan_vien_id" placeholder="Chọn nhân viên..." required="1"/>
-                                    <field name="tai_san_id" placeholder="Chọn tài sản..." required="1"/>
-                                </group>
-                            </page>
-                            <page string="Ghi Chú">
-                                <group>
-                                    <field name="ghi_chu" widget="text" placeholder="Nhập ghi chú..."/>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+  <data>
 
-        <record id="view_lich_su_su_dung_tree" model="ir.ui.view">
-            <field name="name">lich_su_su_dung_tree</field>
-            <field name="model">lich_su_su_dung</field>
-            <field name="arch" type="xml">
-                <tree string="Danh sách lịch sử sử dụng">
-                    <field name="ma_lich_su_su_dung" />
-                    <field name="ngay_muon"/>
-                    <field name="ngay_tra"/>
-                    <field name="nhan_vien_id"/>
-                    <field name="tai_san_id"/>
-                </tree>
-            </field>
-        </record>
+    <record id="view_lich_su_su_dung_form" model="ir.ui.view">
+      <field name="name">lich_su_su_dung.form</field>
+      <field name="model">lich_su_su_dung</field>
+      <field name="arch" type="xml">
+        <form string="Lịch sử sử dụng">
+          <sheet>
+            <group>
+              <field name="ma_lich_su_su_dung" readonly="1"/>
+            </group>
 
-        <record id="lich_su_su_dung_search" model="ir.ui.view">
-            <field name="name">lich_su_su_dung_search</field>
-            <field name="model">lich_su_su_dung</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="ma_lich_su_su_dung"/>
-                    <field name="ngay_muon"/>
-                    <field name="ngay_tra"/>
-                    <field name="nhan_vien_id"/>
-                    <field name="tai_san_id"/>
-                </search>
-            </field>
-        </record>
+            <group col="2" string="Thông tin mượn trả">
+              <field name="ngay_muon" required="1"/>
+              <field name="ngay_tra" required="1"/>
+              <field name="nhan_vien_id" required="1" placeholder="Chọn nhân viên..."/>
+              <field name="tai_san_id" required="1" placeholder="Chọn tài sản..."/>
+            </group>
 
-        <record id="action_lich_su_su_dung" model="ir.actions.act_window">
-            <field name="name">Lịch sử sử dụng</field>
-            <field name="res_model">lich_su_su_dung</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="lich_su_su_dung_search"/>
-        </record>
-    </data>
+            <group string="Ghi chú">
+              <field name="ghi_chu"/>
+            </group>
+          </sheet>
+
+          <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>
+
+        </form>
+      </field>
+    </record>
+
+    <record id="view_lich_su_su_dung_tree" model="ir.ui.view">
+      <field name="name">lich_su_su_dung.tree</field>
+      <field name="model">lich_su_su_dung</field>
+      <field name="arch" type="xml">
+        <tree string="Danh sách lịch sử sử dụng">
+          <field name="ma_lich_su_su_dung"/>
+          <field name="ngay_muon"/>
+          <field name="ngay_tra"/>
+          <field name="nhan_vien_id"/>
+          <field name="tai_san_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_lich_su_su_dung_search" model="ir.ui.view">
+      <field name="name">lich_su_su_dung.search</field>
+      <field name="model">lich_su_su_dung</field>
+      <field name="arch" type="xml">
+        <search string="Tìm kiếm lịch sử sử dụng">
+          <field name="ma_lich_su_su_dung"/>
+          <field name="ngay_muon"/>
+          <field name="ngay_tra"/>
+          <field name="nhan_vien_id"/>
+          <field name="tai_san_id"/>
+        </search>
+      </field>
+    </record>
+
+    <record id="action_lich_su_su_dung" model="ir.actions.act_window">
+      <field name="name">Lịch sử sử dụng</field>
+      <field name="res_model">lich_su_su_dung</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="view_lich_su_su_dung_search"/>
+    </record>
+
+  </data>
 </odoo>

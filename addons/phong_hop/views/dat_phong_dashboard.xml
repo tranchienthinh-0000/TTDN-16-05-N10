@@ -1,24 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
-        <!-- View biểu đồ theo trạng thái -->
-        <record id="view_dat_phong_graph_by_status" model="ir.ui.view">
-            <field name="name">dat.phong.graph.by.status</field>
+        <!-- =========================
+             SEARCH VIEW - DASHBOARD
+        ========================== -->
+        <record id="view_dat_phong_dashboard_search" model="ir.ui.view">
+            <field name="name">dat.phong.dashboard.search</field>
             <field name="model">dat_phong</field>
             <field name="arch" type="xml">
-                <graph string="Thống kê chi tiết" type="bar">
+                <search string="Dashboard - Mượn phòng">
+                    <field name="phong_id"/>
+                    <field name="nguoi_muon_id"/>
+                    <field name="trang_thai"/>
+                    <field name="thoi_gian_muon_du_kien"/>
+                    <field name="thoi_gian_tra_du_kien"/>
+
+                    <separator/>
+
+                    <!-- Trạng thái -->
+                    <filter string="Chờ duyệt" name="f_cho_duyet" domain="[('trang_thai','=','chờ_duyệt')]"/>
+                    <filter string="Đã duyệt" name="f_da_duyet" domain="[('trang_thai','=','đã_duyệt')]"/>
+                    <filter string="Đang sử dụng" name="f_dang_sd" domain="[('trang_thai','=','đang_sử_dụng')]"/>
+                    <filter string="Đã trả" name="f_da_tra" domain="[('trang_thai','=','đã_trả')]"/>
+                    <filter string="Đã hủy" name="f_da_huy" domain="[('trang_thai','=','đã_hủy')]"/>
+
+                    <separator/>
+
+                    <!-- Thời gian (lọc theo MƯỢN DỰ KIẾN)
+                         LƯU Ý: trong XML attribute phải escape '<' thành '&lt;'
+                    -->
+                    <!-- Hôm nay -->
+                    <filter string="Hôm nay" name="f_today"
+                            domain="[('thoi_gian_muon_du_kien','&gt;=', context_today()),
+                                    ('thoi_gian_muon_du_kien','&lt;',  context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+
+                    <!-- Tháng này (lọc theo YYYY-MM) -->
+                    <filter string="Tháng này" name="f_month"
+                            domain="[('thoi_gian_muon_du_kien','ilike', context_today().strftime('%%Y-%%m-'))]"/>
+
+                    <!-- Năm nay (lọc theo YYYY-) -->
+                    <filter string="Năm nay" name="f_year"
+                            domain="[('thoi_gian_muon_du_kien','ilike', context_today().strftime('%%Y-'))]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Phòng" name="g_phong" context="{'group_by':'phong_id'}"/>
+                        <filter string="Người mượn" name="g_nguoi_muon" context="{'group_by':'nguoi_muon_id'}"/>
+                        <filter string="Trạng thái" name="g_trang_thai" context="{'group_by':'trang_thai'}"/>
+                        <filter string="Ngày mượn (dự kiến)" name="g_ngay"
+                                context="{'group_by':'thoi_gian_muon_du_kien:day'}"/>
+                        <filter string="Tháng mượn (dự kiến)" name="g_thang"
+                                context="{'group_by':'thoi_gian_muon_du_kien:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- =========================
+             GRAPH VIEW (stacked bar)
+        ========================== -->
+        <record id="view_dat_phong_graph_dashboard" model="ir.ui.view">
+            <field name="name">dat.phong.graph.dashboard</field>
+            <field name="model">dat_phong</field>
+            <field name="arch" type="xml">
+                <graph string="📊 Thống kê theo phòng và trạng thái" type="bar" stacked="True">
+                    <field name="phong_id" type="row"/>
                     <field name="trang_thai" type="col"/>
                     <field name="id" type="measure"/>
                 </graph>
             </field>
         </record>
 
-        <!-- Action -->
+        <!-- =========================
+             PIVOT VIEW
+        ========================== -->
+        <record id="view_dat_phong_pivot_dashboard" model="ir.ui.view">
+            <field name="name">dat.phong.pivot.dashboard</field>
+            <field name="model">dat_phong</field>
+            <field name="arch" type="xml">
+                <pivot string="📌 Pivot - Phân tích mượn phòng">
+                    <field name="phong_id" type="row"/>
+                    <field name="nguoi_muon_id" type="row"/>
+                    <field name="trang_thai" type="col"/>
+                    <field name="thoi_gian_muon_du_kien" interval="month" type="col"/>
+                    <field name="id" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- =========================
+             TREE VIEW (drill-down)
+        ========================== -->
+        <record id="view_dat_phong_tree_dashboard" model="ir.ui.view">
+            <field name="name">dat.phong.tree.dashboard</field>
+            <field name="model">dat_phong</field>
+            <field name="arch" type="xml">
+                <tree string="Danh sách (drill-down)" create="false">
+                    <field name="phong_id"/>
+                    <field name="nguoi_muon_id"/>
+                    <field name="thoi_gian_muon_du_kien"/>
+                    <field name="thoi_gian_tra_du_kien"/>
+                    <field name="trang_thai"
+                           decoration-success="trang_thai=='đã_duyệt'"
+                           decoration-danger="trang_thai=='đang_sử_dụng'"
+                           decoration-muted="trang_thai=='đã_hủy'"
+                           decoration-info="trang_thai=='chờ_duyệt'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- =========================
+             ACTION - DASHBOARD
+        ========================== -->
         <record id="action_dat_phong_dashboard" model="ir.actions.act_window">
-            <field name="name">📊 Dashboard Trạng Thái Mượn Phòng</field>
+            <field name="name">📊 Dashboard Trạng thái mượn phòng</field>
             <field name="res_model">dat_phong</field>
-            <field name="view_mode">graph</field>
-            <field name="view_id" ref="view_dat_phong_graph_by_status"/>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="search_view_id" ref="view_dat_phong_dashboard_search"/>
+            <field name="context">{'search_default_f_month': 1}</field>
         </record>
 
     </data>

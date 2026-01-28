@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- Đăng ký: mở thẳng form tạo mới -->
+    <record id="action_dat_phong_dang_ky" model="ir.actions.act_window">
+      <field name="name">Đăng ký mượn phòng</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_dat_phong_form"/>
+      <field name="target">current</field>
+      <field name="context">{'default_trang_thai': 'chờ_duyệt'}</field>
+    </record>
+
+    <!-- Tất cả -->
+    <record id="action_dat_phong" model="ir.actions.act_window">
+      <field name="name">Tất cả đăng ký</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+    <!-- Các danh sách trạng thái -->
+    <record id="action_dat_phong_cho_duyet" model="ir.actions.act_window">
+      <field name="name">Danh sách chờ duyệt</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="domain">[('trang_thai','=','chờ_duyệt')]</field>
+      <field name="context">{'create': False}</field>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+    <record id="action_dat_phong_da_duyet" model="ir.actions.act_window">
+      <field name="name">Danh sách đã duyệt</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="domain">[('trang_thai','=','đã_duyệt')]</field>
+      <field name="context">{'create': False}</field>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+    <record id="action_dat_phong_dang_su_dung" model="ir.actions.act_window">
+      <field name="name">Danh sách phòng đang sử dụng</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="domain">[('trang_thai','=','đang_sử_dụng')]</field>
+      <field name="context">{'create': False}</field>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+    <record id="action_dat_phong_da_tra" model="ir.actions.act_window">
+      <field name="name">Danh sách đã trả</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="domain">[('trang_thai','=','đã_trả')]</field>
+      <field name="context">{'create': False}</field>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+    <record id="action_dat_phong_da_huy" model="ir.actions.act_window">
+      <field name="name">Danh sách đã hủy</field>
+      <field name="res_model">dat_phong</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="dat_phong_search"/>
+      <field name="domain">[('trang_thai','=','đã_hủy')]</field>
+      <field name="context">{'create': False}</field>
+      <field name="views" eval="[
+        (ref('view_dat_phong_tree'), 'tree'),
+        (ref('view_dat_phong_form'), 'form')
+      ]"/>
+    </record>
+
+  </data>
+</odoo>

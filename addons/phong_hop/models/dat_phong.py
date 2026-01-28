@@ -6,16 +6,16 @@ from datetime import datetime
 class DatPhong(models.Model):
     _name = "dat_phong"
     _description = "Đăng ký mượn phòng"
+    _order = "thoi_gian_muon_du_kien desc, id desc"
 
     phong_id = fields.Many2one("quan_ly_phong_hop", string="Phòng họp", required=True)
     nguoi_muon_id = fields.Many2one("nhan_vien", string="Người mượn", required=True)
 
-    # CẢI TIẾN: chọn thiết bị sử dụng cho lần đặt phòng
     thiet_bi_ids = fields.Many2many(
-        comodel_name="thiet_bi",
-        relation="dat_phong_thiet_bi_rel",
-        column1="dat_phong_id",
-        column2="thiet_bi_id",
+        "thiet_bi",
+        "dat_phong_thiet_bi_rel",
+        "dat_phong_id",
+        "thiet_bi_id",
         string="Thiết bị sử dụng",
     )
 
@@ -29,34 +29,89 @@ class DatPhong(models.Model):
         ("đã_duyệt", "Đã duyệt"),
         ("đang_sử_dụng", "Đang sử dụng"),
         ("đã_hủy", "Đã hủy"),
-        ("đã_trả", "Đã trả")
+        ("đã_trả", "Đã trả"),
     ], string="Trạng thái", default="chờ_duyệt")
 
-    lich_su_ids = fields.One2many("lich_su_thay_doi", "dat_phong_id", string="Lịch sử mượn trả")
+    lich_su_ids = fields.One2many("lich_su_thay_doi", "dat_phong_id", string="Lịch sử thay đổi (Audit)")
 
-    # Giữ nguyên logic cũ (One2many theo phong_id)
-    chi_tiet_su_dung_ids = fields.One2many(
+    # ✅ Thay One2many sai bằng Many2many compute để xem các lượt cùng phòng
+    chi_tiet_su_dung_ids = fields.Many2many(
         "dat_phong",
-        "phong_id",
-        string="Chi Tiết Sử Dụng",
-        domain=[("trang_thai", "in", ["đang_sử_dụng", "đã_trả"])]
+        string="Chi tiết sử dụng (cùng phòng)",
+        compute="_compute_chi_tiet_su_dung",
+        store=False,
     )
 
-    # ==========================
-    # CẢI TIẾN: KHÔNG TRÙNG THIẾT BỊ THEO KHUNG GIỜ
-    # ==========================
+    # ==========================================================
+    # AUDIT
+    # ==========================================================
+    def _ghi_audit(self, record, hanh_dong, trang_thai_truoc, trang_thai_sau, ghi_chu=None):
+        self.env["lich_su_thay_doi"].create({
+            "dat_phong_id": record.id,
+            "hanh_dong": hanh_dong,
+            "trang_thai_truoc": trang_thai_truoc,
+            "trang_thai_sau": trang_thai_sau,
+            "ghi_chu": ghi_chu or "",
+            "nguoi_thuc_hien_user_id": self.env.user.id,
+        })
+
+    # ==========================================================
+    # VALIDATION TIME
+    # ==========================================================
+    def _validate_time(self):
+        for r in self:
+            if r.thoi_gian_muon_du_kien and r.thoi_gian_tra_du_kien:
+                if r.thoi_gian_muon_du_kien >= r.thoi_gian_tra_du_kien:
+                    raise exceptions.UserError("Thời gian trả dự kiến phải lớn hơn thời gian mượn dự kiến.")
+
+    # ==========================================================
+    # ✅ CHỐNG TRÙNG PHÒNG NGAY TỪ LÚC TẠO/CHỜ_DUYỆT
+    # - Chỉ cần block nếu trùng với ĐƠN ĐÃ DUYỆT / ĐANG SỬ DỤNG
+    # - Cho phép nhiều đơn CHỜ_DUYỆT trùng nhau (để admin chọn duyệt 1 đơn)
+    # ==========================================================
+    def _kiem_tra_trung_phong_voi_don_da_duyet_hoac_dang_sd(self):
+        for r in self:
+            if not r.phong_id or not r.thoi_gian_muon_du_kien or not r.thoi_gian_tra_du_kien:
+                continue
+
+            r._validate_time()
+
+            domain = [
+                ("id", "!=", r.id),
+                ("phong_id", "=", r.phong_id.id),
+                ("trang_thai", "in", ["đã_duyệt", "đang_sử_dụng"]),
+                ("thoi_gian_muon_du_kien", "<", r.thoi_gian_tra_du_kien),
+                ("thoi_gian_tra_du_kien", ">", r.thoi_gian_muon_du_kien),
+            ]
+            conflict = self.search(domain, limit=1)
+            if conflict:
+                raise exceptions.UserError(
+                    "Phòng đã có lịch ĐÃ DUYỆT/ĐANG SỬ DỤNG trùng khung giờ.\n"
+                    f"- Đơn trùng: {conflict.display_name}\n"
+                    f"- Thời gian: {conflict.thoi_gian_muon_du_kien} → {conflict.thoi_gian_tra_du_kien}"
+                )
+
+    @api.constrains("phong_id", "thoi_gian_muon_du_kien", "thoi_gian_tra_du_kien", "trang_thai")
+    def _constrains_khong_trung_phong(self):
+        """
+        Áp dụng cho đơn còn hiệu lực (chờ duyệt/đã duyệt/đang sử dụng).
+        Mục tiêu: tạo 'chờ_duyệt' đã phải bị từ chối nếu đè lên đơn 'đã_duyệt' hoặc 'đang_sử_dụng'.
+        """
+        for r in self:
+            if r.trang_thai in ["chờ_duyệt", "đã_duyệt", "đang_sử_dụng"]:
+                r._kiem_tra_trung_phong_voi_don_da_duyet_hoac_dang_sd()
+
+    # ==========================================================
+    # TRÙNG THIẾT BỊ THEO KHUNG GIỜ (dự kiến)
+    # ==========================================================
     def _kiem_tra_trung_thiet_bi(self):
-        """
-        Không cho trùng thiết bị theo khung giờ.
-        Chặn với các đơn: chờ_duyệt / đã_duyệt / đang_sử_dụng.
-        """
         for record in self:
             if not record.thiet_bi_ids:
                 continue
             if not record.thoi_gian_muon_du_kien or not record.thoi_gian_tra_du_kien:
                 continue
-            if record.thoi_gian_muon_du_kien >= record.thoi_gian_tra_du_kien:
-                raise exceptions.UserError("Thời gian trả dự kiến phải lớn hơn thời gian mượn dự kiến.")
+
+            record._validate_time()
 
             domain = [
                 ("id", "!=", record.id),
@@ -69,130 +124,221 @@ class DatPhong(models.Model):
             if trung:
                 tb_giao = record.thiet_bi_ids & trung.thiet_bi_ids
                 raise exceptions.UserError(
-                    "Thiết bị bị trùng lịch với một đơn đặt phòng khác.\n"
+                    "Thiết bị bị trùng lịch.\n"
                     f"- Đơn trùng: {trung.display_name}\n"
                     f"- Thiết bị trùng: {', '.join(tb_giao.mapped('name'))}"
                 )
 
-    # Chặn “lách” bằng cách sửa trực tiếp record
-    @api.constrains('thiet_bi_ids', 'thoi_gian_muon_du_kien', 'thoi_gian_tra_du_kien', 'trang_thai')
-    def _constrains_trung_thiet_bi(self):
-        for record in self:
-            if record.trang_thai in ["chờ_duyệt", "đã_duyệt", "đang_sử_dụng"]:
-                record._kiem_tra_trung_thiet_bi()
+    @api.constrains("thiet_bi_ids", "thoi_gian_muon_du_kien", "thoi_gian_tra_du_kien", "trang_thai")
+    def _constrains_khong_trung_thiet_bi(self):
+        for r in self:
+            if r.trang_thai in ["chờ_duyệt", "đã_duyệt", "đang_sử_dụng"]:
+                r._kiem_tra_trung_thiet_bi()
 
+    # ==========================================================
+    # THIẾT BỊ PHẢI Ở KHO + SẴN SÀNG
+    # ==========================================================
+    def _kiem_tra_thiet_bi_san_sang_trong_kho(self):
+        for r in self:
+            if r.trang_thai not in ["chờ_duyệt", "đã_duyệt", "đang_sử_dụng"]:
+                continue
+            if not r.thiet_bi_ids:
+                continue
+
+            tb_khong_hop_le = r.thiet_bi_ids.filtered(
+                lambda tb: tb.trang_thai in ["hong", "can_bao_tri", "dang_su_dung"]
+                or tb.vi_tri_hien_tai != "kho"
+            )
+            if tb_khong_hop_le:
+                raise exceptions.UserError(
+                    "Có thiết bị không hợp lệ (không ở kho / không sẵn sàng / đang hỏng-bảo trì-đang dùng):\n- "
+                    + "\n- ".join(tb_khong_hop_le.mapped("name"))
+                )
+
+    @api.constrains("thiet_bi_ids", "trang_thai")
+    def _constrains_thiet_bi_kho(self):
+        self._kiem_tra_thiet_bi_san_sang_trong_kho()
+
+    # ==========================================================
+    # COMPUTE: chi_tiet_su_dung_ids
+    # ==========================================================
+    @api.depends("phong_id")
+    def _compute_chi_tiet_su_dung(self):
+        for r in self:
+            if not r.phong_id:
+                r.chi_tiet_su_dung_ids = [(6, 0, [])]
+                continue
+            bookings = self.search([
+                ("phong_id", "=", r.phong_id.id),
+                ("trang_thai", "in", ["đang_sử_dụng", "đã_trả"]),
+            ], order="thoi_gian_muon_du_kien desc")
+            r.chi_tiet_su_dung_ids = [(6, 0, bookings.ids)]
+
+    # ==========================================================
+    # CREATE/WRITE
+    # ==========================================================
+    @api.model
+    def create(self, vals):
+        rec = super().create(vals)
+        rec._ghi_audit(rec, "tao", False, rec.trang_thai, ghi_chu="Tạo đăng ký")
+        return rec
+
+    def write(self, vals):
+        if self.env.context.get("skip_audit_write"):
+            return super(DatPhong, self).write(vals)
+
+        old_map = {r.id: r.trang_thai for r in self}
+        res = super(DatPhong, self).write(vals)
+
+        if "trang_thai" in vals:
+            for r in self:
+                truoc = old_map.get(r.id)
+                sau = r.trang_thai
+                if truoc != sau:
+                    self._ghi_audit(r, "cap_nhat", truoc, sau, ghi_chu="Cập nhật trực tiếp (write)")
+
+        need_rebuild = False
+        if vals.get("trang_thai") == "đã_trả":
+            need_rebuild = True
+        if "thoi_gian_muon_thuc_te" in vals or "thoi_gian_tra_thuc_te" in vals:
+            need_rebuild = True
+
+        if need_rebuild and "lich_su_muon_tra" in self.env:
+            try:
+                self.env["lich_su_muon_tra"].update_lich_su_muon_tra()
+            except Exception:
+                pass
+
+        return res
+
+    # ==========================================================
+    # NGHIỆP VỤ
+    # ==========================================================
     def xac_nhan_duyet_phong(self):
-        """Xác nhận duyệt phòng và tự động hủy các yêu cầu bị trùng thời gian."""
         for record in self:
             if record.trang_thai != "chờ_duyệt":
                 raise exceptions.UserError("Chỉ có thể duyệt yêu cầu có trạng thái 'Chờ duyệt'.")
 
-            # CẢI TIẾN: kiểm tra trùng thiết bị trước khi duyệt
+            # ✅ check phòng trùng với đơn đã duyệt/đang dùng (lần nữa để chắc)
+            record._kiem_tra_trung_phong_voi_don_da_duyet_hoac_dang_sd()
+
+            record._kiem_tra_thiet_bi_san_sang_trong_kho()
             record._kiem_tra_trung_thiet_bi()
 
-            # Duyệt yêu cầu hiện tại
-            record.write({"trang_thai": "đã_duyệt"})
-            record.lich_su(record)
+            truoc = record.trang_thai
+            record.with_context(skip_audit_write=True).write({"trang_thai": "đã_duyệt"})
+            record._ghi_audit(record, "duyet", truoc, record.trang_thai)
 
-            # Hủy các yêu cầu cùng phòng có thời gian trùng lặp
-            cung_phong_trung_thoi_gian = [
+            # Hủy các yêu cầu cùng phòng trùng thời gian (chỉ chờ duyệt)
+            cung_phong_trung = self.search([
                 ("phong_id", "=", record.phong_id.id),
                 ("id", "!=", record.id),
                 ("trang_thai", "=", "chờ_duyệt"),
                 ("thoi_gian_muon_du_kien", "<", record.thoi_gian_tra_du_kien),
                 ("thoi_gian_tra_du_kien", ">", record.thoi_gian_muon_du_kien),
-            ]
-            xu_li_cung_phong = self.search(cung_phong_trung_thoi_gian)
-            for other in xu_li_cung_phong:
-                other.write({"trang_thai": "đã_hủy"})
-                record.lich_su(other)
+            ])
+            for other in cung_phong_trung:
+                t0 = other.trang_thai
+                other.with_context(skip_audit_write=True).write({"trang_thai": "đã_hủy"})
+                record._ghi_audit(
+                    other, "tu_dong_huy", t0, other.trang_thai,
+                    ghi_chu="Tự động hủy do trùng lịch (cùng phòng)"
+                )
 
-            # Hủy các yêu cầu khác phòng nhưng của cùng người mượn nếu bị trùng thời gian
-            khac_phong_trung_thoi_gian = [
+            # Hủy các yêu cầu khác phòng nhưng cùng người mượn trùng thời gian (chỉ chờ duyệt)
+            khac_phong_trung = self.search([
                 ("nguoi_muon_id", "=", record.nguoi_muon_id.id),
                 ("id", "!=", record.id),
                 ("trang_thai", "=", "chờ_duyệt"),
                 ("thoi_gian_muon_du_kien", "<", record.thoi_gian_tra_du_kien),
                 ("thoi_gian_tra_du_kien", ">", record.thoi_gian_muon_du_kien),
-            ]
-            xu_li_khac_phong = self.search(khac_phong_trung_thoi_gian)
-            for other in xu_li_khac_phong:
-                other.write({"trang_thai": "đã_hủy"})
-                record.lich_su(other)
+            ])
+            for other in khac_phong_trung:
+                t0 = other.trang_thai
+                other.with_context(skip_audit_write=True).write({"trang_thai": "đã_hủy"})
+                record._ghi_audit(
+                    other, "tu_dong_huy", t0, other.trang_thai,
+                    ghi_chu="Tự động hủy do trùng lịch (cùng người mượn)"
+                )
 
     def huy_muon_phong(self):
-        """Hủy đăng ký mượn phòng."""
         for record in self:
             if record.trang_thai != "chờ_duyệt":
                 raise exceptions.UserError("Chỉ có thể hủy yêu cầu có trạng thái 'Chờ duyệt'.")
-            record.write({"trang_thai": "đã_hủy"})
-            record.lich_su(record)
+            truoc = record.trang_thai
+            record.with_context(skip_audit_write=True).write({"trang_thai": "đã_hủy"})
+            record._ghi_audit(record, "huy", truoc, record.trang_thai)
 
     def huy_da_duyet(self):
-        """Hủy yêu cầu đã duyệt."""
         for record in self:
             if record.trang_thai != "đã_duyệt":
                 raise exceptions.UserError("Chỉ có thể hủy yêu cầu có trạng thái 'Đã duyệt'.")
-            record.write({"trang_thai": "đã_hủy"})
-            record.lich_su(record)
+            truoc = record.trang_thai
+            record.with_context(skip_audit_write=True).write({"trang_thai": "đã_hủy"})
+            record._ghi_audit(record, "huy_duyet", truoc, record.trang_thai)
 
     def bat_dau_su_dung(self):
-        """Bắt đầu sử dụng phòng - Cập nhật thời gian mượn thực tế."""
         for record in self:
             if record.trang_thai != "đã_duyệt":
                 raise exceptions.UserError("Chỉ có thể bắt đầu sử dụng phòng có trạng thái 'Đã duyệt'.")
 
-            # kiểm tra nếu đã có người đang sử dụng phòng này
-            kiem_tra_phong = self.search([
+            # vẫn giữ check phòng đang dùng (trạng thái realtime)
+            dang_su_dung = self.search([
                 ("phong_id", "=", record.phong_id.id),
                 ("trang_thai", "=", "đang_sử_dụng"),
                 ("id", "!=", record.id),
             ], limit=1)
-            if kiem_tra_phong:
+            if dang_su_dung:
                 raise exceptions.UserError(
                     f"Phòng {record.phong_id.name} hiện đang được sử dụng. Vui lòng chờ đến khi phòng trống."
                 )
 
-            # CẢI TIẾN: kiểm tra trùng thiết bị ngay trước khi bắt đầu sử dụng
+            record._kiem_tra_thiet_bi_san_sang_trong_kho()
             record._kiem_tra_trung_thiet_bi()
 
-            record.write({
+            truoc = record.trang_thai
+            now = datetime.now()
+            record.with_context(skip_audit_write=True).write({
                 "trang_thai": "đang_sử_dụng",
-                "thoi_gian_muon_thuc_te": datetime.now(),
+                "thoi_gian_muon_thuc_te": now,
             })
-            record.lich_su(record)
+            record._ghi_audit(record, "bat_dau", truoc, record.trang_thai)
 
-            # (Khuyến nghị) Cập nhật trạng thái thiết bị
-            if record.thiet_bi_ids:
-                record.thiet_bi_ids.write({"trang_thai": "dang_su_dung"})
+            # Kho -> Phòng
+            if record.thiet_bi_ids and hasattr(self.env["thiet_bi"], "dua_vao_phong"):
+                self.env["thiet_bi"].dua_vao_phong(record.thiet_bi_ids, record.phong_id.id)
+            elif record.thiet_bi_ids:
+                record.thiet_bi_ids.write({
+                    "trang_thai": "dang_su_dung",
+                    "vi_tri_hien_tai": "phong",
+                    "phong_hien_tai_id": record.phong_id.id,
+                })
 
     def tra_phong(self):
-        """Trả phòng - Cập nhật thời gian trả thực tế và đảm bảo thời gian mượn thực tế có giá trị."""
         for record in self:
             if record.trang_thai != "đang_sử_dụng":
                 raise exceptions.UserError("Chỉ có thể trả phòng đang ở trạng thái 'Đang sử dụng'.")
 
-            current_time = datetime.now()
-            record.write({
+            truoc = record.trang_thai
+            now = datetime.now()
+            record.with_context(skip_audit_write=True).write({
                 "trang_thai": "đã_trả",
-                "thoi_gian_tra_thuc_te": current_time,
-                "thoi_gian_muon_thuc_te": record.thoi_gian_muon_thuc_te or current_time,
+                "thoi_gian_tra_thuc_te": now,
+                "thoi_gian_muon_thuc_te": record.thoi_gian_muon_thuc_te or now,
             })
-            record.lich_su(record)
+            record._ghi_audit(record, "tra", truoc, record.trang_thai)
 
-            # (Khuyến nghị) Trả thiết bị về sẵn sàng
-            if record.thiet_bi_ids:
-                record.thiet_bi_ids.write({"trang_thai": "san_sang"})
+            try:
+                self.env["lich_su_muon_tra"].update_lich_su_muon_tra()
+            except Exception:
+                pass
 
-    @api.model
-    def lich_su(self, record):
-        """Ghi vào lịch sử mượn trả."""
-        self.env["lich_su_thay_doi"].create({
-            "dat_phong_id": record.id,
-            "nguoi_muon_id": record.nguoi_muon_id.id,
-            "thoi_gian_muon_du_kien": record.thoi_gian_muon_du_kien,
-            "thoi_gian_muon_thuc_te": record.thoi_gian_muon_thuc_te,
-            "thoi_gian_tra_du_kien": record.thoi_gian_tra_du_kien,
-            "thoi_gian_tra_thuc_te": record.thoi_gian_tra_thuc_te,
-            "trang_thai": record.trang_thai,
-        })
+            # Phòng -> Kho
+            if record.thiet_bi_ids and hasattr(self.env["thiet_bi"], "dua_ve_kho"):
+                self.env["thiet_bi"].dua_ve_kho(record.thiet_bi_ids)
+            elif record.thiet_bi_ids:
+                record.thiet_bi_ids.write({
+                    "trang_thai": "san_sang",
+                    "vi_tri_hien_tai": "kho",
+                    "phong_hien_tai_id": False,
+                })

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- =============== -->
+    <!-- 1) Pie: Trạng thái tài sản -->
+    <!-- =============== -->
+    <record id="view_tai_san_graph_pie_trang_thai" model="ir.ui.view">
+      <field name="name">tai_san.graph.pie.trang_thai</field>
+      <field name="model">tai_san</field>
+      <field name="arch" type="xml">
+        <graph string="Trạng thái tài sản" type="pie">
+          <field name="trang_thai"/>
+          <field name="id" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="action_tai_san_pie_trang_thai" model="ir.actions.act_window">
+      <field name="name">Trạng thái tài sản (Pie)</field>
+      <field name="res_model">tai_san</field>
+      <field name="view_mode">graph</field>
+      <field name="view_id" ref="view_tai_san_graph_pie_trang_thai"/>
+      <field name="context">{}</field>
+    </record>
+
+    <!-- =============== -->
+    <!-- 2) Bar: Giá trị hiện tại theo tài sản -->
+    <!-- =============== -->
+    <record id="view_tai_san_graph_bar_gia_tri" model="ir.ui.view">
+      <field name="name">tai_san.graph.bar.gia_tri</field>
+      <field name="model">tai_san</field>
+      <field name="arch" type="xml">
+        <graph string="Giá trị hiện tại" type="bar">
+          <field name="ten_tai_san" type="row"/>
+          <field name="gia_tri_hien_tai" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="action_tai_san_bar_gia_tri" model="ir.actions.act_window">
+      <field name="name">Giá trị hiện tại (Bar)</field>
+      <field name="res_model">tai_san</field>
+      <field name="view_mode">graph</field>
+      <field name="view_id" ref="view_tai_san_graph_bar_gia_tri"/>
+      <field name="context">{}</field>
+    </record>
+
+    <!-- =============== -->
+    <!-- 3) Line: Lịch sử sử dụng theo ngày mượn -->
+    <!-- =============== -->
+    <record id="view_lich_su_su_dung_graph_line" model="ir.ui.view">
+      <field name="name">lich_su_su_dung.graph.line</field>
+      <field name="model">lich_su_su_dung</field>
+      <field name="arch" type="xml">
+        <graph string="Lịch sử sử dụng theo thời gian" type="line">
+          <field name="ngay_muon" type="row" interval="day"/>
+          <field name="id" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="action_lich_su_su_dung_line" model="ir.actions.act_window">
+      <field name="name">Lịch sử sử dụng (Line)</field>
+      <field name="res_model">lich_su_su_dung</field>
+      <field name="view_mode">graph</field>
+      <field name="view_id" ref="view_lich_su_su_dung_graph_line"/>
+      <field name="context">{}</field>
+    </record>
+
+    <!-- =============== -->
+    <!-- 4) Pie: Tài sản theo nhà cung cấp -->
+    <!-- =============== -->
+    <record id="view_tai_san_graph_pie_nha_cung_cap" model="ir.ui.view">
+      <field name="name">tai_san.graph.pie.nha_cung_cap</field>
+      <field name="model">tai_san</field>
+      <field name="arch" type="xml">
+        <graph string="Tài sản theo nhà cung cấp" type="pie">
+          <field name="nha_cung_cap_id"/>
+          <field name="id" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="action_tai_san_pie_nha_cung_cap" model="ir.actions.act_window">
+      <field name="name">Nhà cung cấp (Pie)</field>
+      <field name="res_model">tai_san</field>
+      <field name="view_mode">graph</field>
+      <field name="view_id" ref="view_tai_san_graph_pie_nha_cung_cap"/>
+      <field name="context">{}</field>
+    </record>
+
+  </data>
+</odoo>

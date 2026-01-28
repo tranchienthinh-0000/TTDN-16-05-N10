@@ -1,72 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_lich_su_thay_doi_form" model="ir.ui.view">
-            <field name="name">lich_su_thay_doi</field>
+
+        <!-- =========================
+             TREE VIEW - AUDIT LOG
+        ========================== -->
+        <record id="view_lich_su_thay_doi_tree" model="ir.ui.view">
+            <field name="name">lich_su_thay_doi_tree</field>
             <field name="model">lich_su_thay_doi</field>
             <field name="arch" type="xml">
-                <form create="false">
+                <tree string="🧾 Lịch sử thay đổi (Audit)" create="false" delete="false">
+                    <field name="ngay_thay_doi"/>
+                    <field name="dat_phong_id"/>
+                    <field name="phong_id"/>
+                    <field name="nguoi_muon_id"/>
+                    <field name="hanh_dong"/>
+                    <field name="trang_thai_truoc"/>
+                    <field name="trang_thai_sau"/>
+                    <field name="nguoi_thuc_hien_user_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- =========================
+             FORM VIEW - AUDIT LOG
+        ========================== -->
+        <record id="view_lich_su_thay_doi_form" model="ir.ui.view">
+            <field name="name">lich_su_thay_doi_form</field>
+            <field name="model">lich_su_thay_doi</field>
+            <field name="arch" type="xml">
+                <form string="🧾 Chi tiết Audit" create="false" delete="false">
                     <sheet>
-                        <div class="oe_read_only" style="font-size:25px">Lịch sử thay đổi</div>
-                        <group col="4" string="Thông tin chung">
-                            
-                            <field name="phong_id"/>
-                            <field name="nguoi_muon_id"/>
-                            <field name="thoi_gian_muon_du_kien"/>
-                            <field name="thoi_gian_muon_thuc_te"/>
-                            <field name="thoi_gian_tra_du_kien"/>
-                            <field name="thoi_gian_tra_thuc_te"/>
-                            <field name="trang_thai"/>
-                            <field name="ngay_thay_doi"/>
+                        <group col="4">
+                            <group string="Thông tin tham chiếu">
+                                <field name="dat_phong_id" readonly="1"/>
+                                <field name="phong_id" readonly="1"/>
+                                <field name="nguoi_muon_id" readonly="1"/>
+                                <field name="thoi_gian_muon_du_kien" readonly="1"/>
+                                <field name="thoi_gian_tra_du_kien" readonly="1"/>
+                            </group>
+
+                            <group string="Thông tin audit">
+                                <field name="hanh_dong" readonly="1"/>
+                                <field name="trang_thai_truoc" readonly="1"/>
+                                <field name="trang_thai_sau" readonly="1"/>
+                                <field name="nguoi_thuc_hien_user_id" readonly="1"/>
+                                <field name="ngay_thay_doi" readonly="1"/>
+                            </group>
                         </group>
-                        
+
+                        <group>
+                            <field name="ghi_chu" placeholder="Ghi chú (nếu cần)..." readonly="1"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <record id="view_lich_su_thay_doi_tree" model="ir.ui.view">
-            <field name="name">lich_su_thay_doi</field>
+        <!-- =========================
+             SEARCH VIEW
+        ========================== -->
+        <record id="view_lich_su_thay_doi_search" model="ir.ui.view">
+            <field name="name">lich_su_thay_doi_search</field>
             <field name="model">lich_su_thay_doi</field>
             <field name="arch" type="xml">
-                <tree create="false">
-                    
+                <search string="🔍 Tìm Audit">
+                    <field name="dat_phong_id"/>
                     <field name="phong_id"/>
                     <field name="nguoi_muon_id"/>
-                    <field name="thoi_gian_muon_du_kien"/>
-                    <field name="thoi_gian_muon_thuc_te"/>
-                    <field name="thoi_gian_tra_du_kien"/>
-                    <field name="thoi_gian_tra_thuc_te"/>
-                    <field name="trang_thai"/>
+                    <field name="hanh_dong"/>
+                    <field name="nguoi_thuc_hien_user_id"/>
                     <field name="ngay_thay_doi"/>
-                </tree>
-            </field>
-        </record>
 
-        <record model="ir.ui.view" id="lich_su_thay_doi_search">
-            <field name="model">lich_su_thay_doi</field>
-            <field name="arch" type="xml">
-                <search>
-                    
-                    <field name="phong_id"/>
-                    <field name="nguoi_muon_id"/>
-                    <field name="thoi_gian_muon_du_kien"/>
-                    <field name="thoi_gian_muon_thuc_te"/>
-                    <field name="thoi_gian_tra_du_kien"/>
-                    <field name="thoi_gian_tra_thuc_te"/>
-                    <field name="trang_thai"/>
-                    <field name="ngay_thay_doi"/>
+                    <separator/>
+
+                    <filter string="Duyệt" name="f_duyet" domain="[('hanh_dong','=','duyet')]"/>
+                    <filter string="Hủy" name="f_huy" domain="[('hanh_dong','in',['huy','huy_duyet','tu_dong_huy'])]"/>
+                    <filter string="Trả phòng" name="f_tra" domain="[('hanh_dong','=','tra')]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Phòng" name="g_phong" context="{'group_by':'phong_id'}"/>
+                        <filter string="Người mượn" name="g_nm" context="{'group_by':'nguoi_muon_id'}"/>
+                        <filter string="Hành động" name="g_hd" context="{'group_by':'hanh_dong'}"/>
+                        <filter string="Người thực hiện" name="g_user" context="{'group_by':'nguoi_thuc_hien_user_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
+        <!-- =========================
+             ACTION
+        ========================== -->
         <record id="action_lich_su_thay_doi" model="ir.actions.act_window">
-            <field name="name">Lịch sử thay đổi</field>
+            <field name="name">🧾 Lịch sử thay đổi (Audit)</field>
             <field name="res_model">lich_su_thay_doi</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref = "lich_su_thay_doi_search"/>
+            <field name="search_view_id" ref="view_lich_su_thay_doi_search"/>
         </record>
+
     </data>
 </odoo>
-        
-    
