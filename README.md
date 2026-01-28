@@ -79,7 +79,7 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
   <p align="center">
         <img src="docs/logo/qqq.png" alt="" width="500px"/>
   </p>
----
+</div>
 
 ## ⚙️ 4. Cài đặt
 
