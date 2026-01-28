@@ -1,72 +1,220 @@
+<h2 align="center">
+  🎓 Trường Đại học Đại Nam – Khoa Công nghệ Thông tin
+</h2>
+
+<h2 align="center">
+  Hệ thống Quản lý Tài sản & Phòng họp (Odoo ERP)
+</h2>
+
+<div align="center">
+  <p align="center">
+    <!-- Nếu có logo thì thay đường dẫn tại đây -->
+    <!-- <img src="docs/logo/dnu_logo.png" alt="DaiNam University Logo" width="180"/> -->
+  </p>
+
+  <!-- Badges (tuỳ chọn) -->
+  ![Odoo](https://img.shields.io/badge/Odoo-7B3DBB?style=for-the-badge&logo=odoo&logoColor=white)
+  ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+  ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+
+</div>
+
 ---
-![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
-![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white)
-![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
-[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+## 📖 1. Giới thiệu
+Hệ thống được xây dựng để **quản lý tài sản** và **phòng họp** trong tổ chức trên nền tảng **Odoo ERP**,
+nhằm chuẩn hóa quy trình vận hành nội bộ, giảm quản lý thủ công (Excel/nhóm chat), tăng minh bạch và truy vết.
 
+**Bối cảnh triển khai (K16 kế thừa & cải tiến):**
+- Nhóm K16 **kế thừa 02 module từ K15**:
+  - Module quản lý tài sản (K15)
+  - Module quản lý phòng họp (K15)
+- Sau đó nhóm K16 tiến hành **cải tiến**: siết ràng buộc dữ liệu, chuẩn hóa workflow, chống trùng lịch, tăng audit/log,
+bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 
+---
 
+## ✅ 2. Các tính năng
 
-# 1. Cài đặt công cụ, môi trường và các thư viện cần thiết
+### 2.1. Quản lý Tài sản
+- Dashboard tổng quan tài sản theo: **loại / số lượng / giá trị / trạng thái**
+- Quản lý danh mục: **loại tài sản**, **tài sản**
+- Đăng ký mượn/cấp phát theo quy trình:
+  **Tạo yêu cầu → Phê duyệt → Đang mượn → Trả/Thu hồi → Hủy**
+- Bảo trì tài sản/thiết bị, cập nhật trạng thái
+- Báo cáo & Audit: lịch sử mượn–trả, nhật ký thay đổi
+- Nghiệp vụ nâng cao (mở rộng): **kiểm kê, điều chuyển, khấu hao, thanh lý**
 
-## 1.1. Clone project.
-git clone https://gitlab.com/anhlta/odoo-fitdnu.git
-git checkout 
+### 2.2. Quản lý Phòng họp
+- Dashboard phòng họp theo: **trống / đã duyệt / đang sử dụng**
+- Quản lý danh mục phòng: sức chứa, trạng thái
+- Quản lý thiết bị phòng họp (gắn phòng/kho)
+- Đặt phòng theo thời gian + workflow:
+  **Tạo yêu cầu → Phê duyệt → Sử dụng → Trả → Hủy**
+- Chống trùng lịch phòng/thiết bị theo thời gian
+- Báo cáo & Audit: lịch sử đặt phòng, nhật ký thao tác
 
-## 1.2. cài đặt các thư viện cần thiết
+### 2.3. Trợ lý AI đặt phòng (Wizard)
+- Nhập yêu cầu tự nhiên (VD: “Họp 8 người, cần máy chiếu, 14:00–15:30”)
+- Gợi ý phòng/thiết bị phù hợp
+- Tạo đăng ký nhanh, giảm lỗi nhập liệu
 
-Người sử dụng thực thi các lệnh sau đề cài đặt các thư viện cần thiết
+---
 
+## 🧰 3. Công nghệ và công cụ
+
+### Hệ điều hành
+- Ubuntu (WSL) / Linux / Windows
+
+### Công nghệ chính
+- **Odoo ERP** (khuyến nghị v15)
+- **Python 3.10**
+- **PostgreSQL 10**
+- **Docker / Docker Compose**
+- (Tuỳ chọn) Git/GitHub
+
+---
+
+## ⚙️ 4. Cài đặt
+
+### 4.1. Yêu cầu tối thiểu
+- CPU: 2 cores (khuyến nghị 4)
+- RAM: 4GB (khuyến nghị 8GB)
+- Disk trống: 20GB
+
+### 4.2. Khởi tạo PostgreSQL bằng Docker
+Tạo file `docker-compose.yml`:
+```yaml
+version: '3.8'
+services:
+  db:
+    image: postgres:10
+    container_name: odoo_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    ports:
+      - "5431:5432"
+    volumes:
+      - odoo_db_data:/var/lib/postgresql/data
+volumes:
+  odoo_db_data:
 ```
-sudo apt-get install libxml2-dev libxslt-dev libldap2-dev libsasl2-dev libssl-dev python3.10-distutils python3.10-dev build-essential libssl-dev libffi-dev zlib1g-dev python3.10-venv libpq-dev
-```
-## 1.3. khởi tạo môi trường ảo.
 
-`python3.10 -m venv ./venv`
-Thay đổi trình thông dịch sang môi trường ảo và chạy requirements.txt để cài đặt tiếp các thư viện được yêu cầu
-
+Chạy DB:
+```bash
+docker compose up -d
+docker ps
 ```
+
+### 4.3. Tạo môi trường Python & cài dependencies
+```bash
+python3.10 -m venv venv
 source venv/bin/activate
-pip3 install -r requirements.txt
+pip install --upgrade pip wheel setuptools
+pip install -r requirements.txt
 ```
 
-# 2. Setup database
-
-Khởi tạo database trên docker bằng việc thực thi file dockercompose.yml.
-
-`docker-compose up -d`
-
-# 3. Setup tham số chạy cho hệ thống
-
-## 3.1. Khởi tạo odoo.conf
-
-Tạo tệp **odoo.conf** có nội dung như sau:
-
-```
+### 4.4. Cấu hình `odoo.conf`
+Ví dụ:
+```ini
 [options]
-addons_path = addons
+admin_passwd = admin
 db_host = localhost
-db_password = odoo
+db_port = 5431
 db_user = odoo
-db_port = 5432
+db_password = odoo
+
+addons_path = /path/to/odoo/addons,/path/to/custom_addons
+data_dir = /home/<user>/.local/share/Odoo
 xmlrpc_port = 8069
-```
-Có thể kế thừa từ **odoo.conf.template**
-
-Ngoài ra có thể thêm mổ số parameters như:
-
-```
--c _<đường dẫn đến tệp odoo.conf>_
--u _<tên addons>_ giúp cập nhật addons đó trước khi khởi chạy
--d _<tên database>_ giúp chỉ rõ tên database được sử dụng
---dev=all giúp bật chế độ nhà phát triển 
+logfile = /path/to/odoo.log
 ```
 
-# 4. Chạy hệ thống và cài đặt các ứng dụng cần thiết
+### 4.5. Chạy hệ thống
+```bash
+source venv/bin/activate
+python3 odoo/odoo-bin -c odoo.conf
+```
 
-Người sử dụng truy cập theo đường dẫn _http://localhost:8069/_ để đăng nhập vào hệ thống.
+Truy cập:
+- http://localhost:8069
 
-Hoàn tất
-    
+---
+
+## 🧭 5. Hướng dẫn sử dụng
+
+### 5.1. Cài đặt/Upgrade module
+Vào **Apps** → tìm và **Install/Upgrade** các module:
+- `tai_sanm` (K16) *(đổi đúng tên module nếu khác)*
+- `phong_hopm` (K16) *(đổi đúng tên module nếu khác)*
+- (Nếu có) `nhan_su`
+
+### 5.2. Luồng sử dụng nhanh – Tài sản
+1. Tạo **Loại tài sản** → tạo **Tài sản**
+2. Tạo **Phiếu mượn** → phê duyệt → nhận tài sản
+3. **Trả/Thu hồi** → kiểm tra trạng thái và lịch sử mượn–trả
+
+### 5.3. Luồng sử dụng nhanh – Phòng họp
+1. Tạo **Phòng họp** (sức chứa, trạng thái)
+2. Tạo **Thiết bị** (gán kho/phòng)
+3. Tạo **Đơn đặt phòng** → phê duyệt → bắt đầu sử dụng → trả phòng
+4. Kiểm tra **chống trùng lịch** phòng và thiết bị
+
+### 5.4. Sử dụng AI Wizard đặt phòng
+1. Mở wizard → nhập yêu cầu tự nhiên
+2. Nhận gợi ý phòng/thiết bị → tạo đơn nhanh
+3. Kiểm tra đơn đặt được sinh đúng thời gian, phòng và thiết bị
+
+---
+
+## ⭐ 6. Các tính năng nổi bật (K16 so với K15)
+- Chuẩn hóa workflow và điều kiện chuyển trạng thái (giảm thao tác sai)
+- Tăng ràng buộc dữ liệu: thời gian hợp lệ, chống trùng lịch phòng/thiết bị
+- Tăng audit/log để đối chiếu khi có tranh chấp
+- Dashboard/biểu đồ thống kê (hỗ trợ quản trị nhanh)
+- Wizard AI đặt phòng (tăng UX, giảm lỗi nhập liệu)
+- Định hướng tích hợp (API/endpoint nếu dự án có)
+
+---
+
+## 🧩 7. Trường hợp sử dụng (Use cases)
+
+### 7.1. Mượn laptop/máy chiếu cho công việc
+- Nhân viên tạo phiếu mượn → quản lý duyệt → nhận tài sản → trả đúng hạn → hệ thống ghi lịch sử.
+
+### 7.2. Đặt phòng họp có thiết bị
+- Nhân viên tạo đơn đặt phòng theo khung giờ, chọn thiết bị → hệ thống kiểm tra trùng lịch → quản lý duyệt →
+sử dụng → trả phòng/thiết bị.
+
+### 7.3. Kiểm kê và thanh lý tài sản cũ
+- Tạo đợt kiểm kê → cập nhật tình trạng → lập hồ sơ thanh lý → lưu lịch sử tài sản.
+
+---
+
+## 🤝 Đóng góp (Contributing)
+1. Fork/clone dự án
+2. Tạo nhánh mới: `feature/<ten-tinh-nang>`
+3. Commit rõ ràng: `feat: ...`, `fix: ...`
+4. Tạo Pull Request kèm mô tả, ảnh minh hoạ (nếu có)
+
+Gợi ý mở rộng:
+- Phân quyền chi tiết theo vai trò (Admin/Quản lý tài sản/Điều phối phòng họp/Người dùng)
+- Báo cáo KPI: tài sản quá hạn, phòng họp theo tuần/tháng, thiết bị sử dụng nhiều
+- Tích hợp Google/Outlook Calendar và email nhắc lịch
+
+---
+
+## 👥 Thông tin nhóm
+- Nhóm: **Nhóm 10 – K16**
+- Kế thừa: **K15** (Tài sản & Phòng họp)
+- Cải tiến & triển khai: **K16**
+- Thành viên: [Điền theo báo cáo]
+
+---
+
+## 📄 License
+Dự án phục vụ mục đích học tập trong học phần Thực tập doanh nghiệp.
