@@ -75,7 +75,10 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 - **PostgreSQL 10**
 - **Docker / Docker Compose**
 - (Tuỳ chọn) Git/GitHub
-
+<div align="center">
+  <p align="center">
+        <img src="docs/logo/qqq.png" alt="" width="180"/>
+  </p>
 ---
 
 ## ⚙️ 4. Cài đặt
