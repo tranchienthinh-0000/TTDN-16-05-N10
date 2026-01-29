@@ -248,6 +248,8 @@ Gợi ý mở rộng:
 ## 11.  👥 Thông tin nhóm
 - Nhóm: **Nhóm 10 – K16**
 - Kế thừa: **K15** (Tài sản & Phòng họp)
+- https://github.com/Duongbe/TTDN-15-05-N4/tree/master/addons/quan_ly_tai_san/models
+- https://github.com/linhdang2k03/TTDN-15-05-N8/tree/nhom8/addons/quan_li_phong_hop_hoi_truong/models
 - Cải tiến & triển khai: **K16**
 - Thành viên: [Trần Chiến Thịnh, Nguyễn Trọng Anh, Nguyễn Thị Thùy Linh]
 
