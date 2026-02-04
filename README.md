@@ -37,7 +37,6 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 
 ---
 
----
 
 ## Poster
 <p align="center"> <img src="docs/logo/Poster.jpg" alt="Project Poster" width="800"/> </p>
