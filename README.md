@@ -63,13 +63,9 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 - Tạo đăng ký nhanh, giảm lỗi nhập liệu
 
 ---
-### 3. Poster
-<div align="center">
-  <p align="center">
-        <img src="docs/logo/Poster.pdf" alt="Poster" width=""/>
-  </p>
----
 
+### 3. Poster
+ ![poster](docs/logo/Poster.pdf)
 ## 🧰 3. Công nghệ và công cụ
 
 ### Hệ điều hành
