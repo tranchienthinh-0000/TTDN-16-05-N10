@@ -37,6 +37,15 @@ bổ sung dashboard/thống kê và wizard hỗ trợ đặt phòng nhanh.
 
 ---
 
+---
+
+## Poster
+<h1>📰 Poster</h1>
+<p align="center"> <img src="docs/logo/Poster.jpg" alt="Project Poster" width="800"/> </p>
+
+
+---
+
 ## ✅ 2. Các tính năng
 
 ### 2.1. Quản lý Tài sản
